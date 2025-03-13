@@ -10,6 +10,23 @@
 \usepackage{tabularx}
 \usepackage{lipsum}
 \usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\lstdefinestyle{pythonstyle}{
+	language=Python,
+	basicstyle=\ttfamily\small,
+	keywordstyle=\color{blue}\bfseries,
+	commentstyle=\color{gray},
+	stringstyle=\color{red},
+	numbers=left,
+	numberstyle=\tiny,
+	stepnumber=1,
+	frame=single,
+	backgroundcolor=\color{lightgray!20},
+	tabsize=4,
+	showstringspaces=false
+}
 
 %opening
 \title{Solución de problemas mediante ascensión de colinas}
@@ -269,17 +286,26 @@
 		
 		\item La operación que genere los vecinos sera \textit{Bit flip} que intercambia un 0 por un 1 y viceversa en la posición $i$.
 		
+		\[
+		B(x) =
+		\begin{cases} 
+			1, & \text{si } x = 0 \\ 
+			0, & \text{si } x = 1 \\
+		\end{cases}
+		\]
+		
+		
 	\end{itemize}
 	
 	\subsection{Travel Salesman Problem (TSP)}
 	
-	Dado un numero de $n$ ciudades \[ C = \{1,2, \dots , n\} \] Y una matriz simétrica $M$ de las distancias entre las ciudades, se busca encontrar el camino hamiltoniano con menor distancia a recorrer.
+	Dado un numero de $n$ ciudades \[ C = \{1,2, \dots , n\} \] Y una matriz simétrica $M$ de las distancias entre las ciudades, se busca encontrar el camino hamiltoniano con menor distancia a recorrer. 
 	
 	Podemos representar la trayectoria de las ciudades como un vector de enteros:
 	\[ x = (x_1, x_2, \dots, x_n) \; \text{con } x_i \in [1, n] \]
 	Donde:
 	\begin{itemize}
-		\item $x_i = c$ es la ciudad $c$ visitada en la i-ésima posición. Es necesario que cada $c$ sea único en cada ruta $x$.
+		\item $x_i = c$ es la ciudad $c$ visitada en la i-ésima posición. Es necesario que cada $c$ sea único en cada ruta $x$, es decir, que sea $x$ sea una permutación de $C$.
 	\end{itemize}
 	
 	Para calcular la distancia, iteramos el vector en orden y consultamos las distancias de cada par en la matriz $M$: 
@@ -308,10 +334,13 @@
 	
 	\item Entonces, un estado $x_j$ es un estado final si genera una menor aptitud en la comparación de los demás $x_i$ generados: \[ f(x_j) \leq f(x_i) \; \forall x_i \in S \]
 	
-	\item La operación que genere los vecinos sera \textit{Swap}, ya que asegura unicamente cambiar el orden de los elementos sin tener que repetir ciudades.
+	\item La operación que genere los vecinos sera \textit{Swap}, ya que asegura unicamente cambiar el orden de los elementos sin tener que repetir ciudades. Esto implica que: \[ x_i = x_j \; \&  \; x_j = x_i \]
+	
 	\end{itemize}
 	
-	Nótese que el estado inicial puede ser un estado de aceptación. Si realizamos puras operaciones \textit{Swap}, no estamos añadiendo ni quitando ciudades, sino que unicamente se cambia el orden. Por lo que podemos redefinir la función objetivo como: \[ f(x) = d(x) \] Y el conjunto de estados posibles como cualquier vector de tamaño $n$ que tenga números únicos en rango de $[1,n]$: \[ S = \{ x \in \{1, 2, \dots, n  \}^n | \forall x_i \colon \forall x_j \colon x_i \neq x_j \}\]
+	
+	
+	Nótese que el estado inicial puede ser un estado de aceptación. Si realizamos puras operaciones \textit{Swap}, no estamos añadiendo ni quitando ciudades, sino que unicamente se obtiene una nueva permutación. Por lo que podemos redefinir la función objetivo como: \[ f(x) = d(x) \] Y el conjunto de estados posibles como cualquier vector de tamaño $n$ que tenga números únicos en rango de $[1,n]$: \[ S = \{ x \in \{1, 2, \dots, n  \}^n | \forall x_i \colon \forall x_j \colon x_i \neq x_j \}\]
 	
 	\subsection{Minimizar de la función}
 	
@@ -326,5 +355,67 @@
 		
 		\item Un estado de aceptación $x_j$ es aquel que produzca el menor valor de aptitud en la función comparando con los demás $x_i$ generados: \[ f(x_j) \leq f(x_i) \; \forall x_i \in S\] 
 	\end{itemize}
+
+\section{Código}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:cons} ,caption={Constructor de la clase HillClimbing}]
+def __init__(self, 
+space: list[Any],
+information: list[Any],
+evaluateFunction: Callable,
+valueFunction: Callable,
+minimize: bool,
+): 
+
+  self.space = space
+  self.information = information
+  self.evaluateFunction = evaluateFunction
+  self.valueFunction = valueFunction
+  self.minimize = minimize  
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:cons} ,caption={Función Hill Climbing}]
+def HC(self, epochs: int):
+  value: float = self.evaluate()
+
+  for _ in range(epochs):
+    for i in range(len(self.space)):
+      new_space = self.space[:]
+      new_value: float = self.value(new_space, i, value)
+
+      if (self.minimize and new_value < value) or 
+      (not self.minimize and new_value > value):
+        value = new_value
+        self.space = new_space[:]
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:cons} ,caption={Función Steepest-Ascent Hill Climbing}]
+def SAHC(self, epochs: int):
+  value: float = self.evaluate()
+
+  for _ in range(epochs):
+    best_options:list = []
+
+    for i in range(len(self.space)):
+      new_space = self.space[:]
+      new_value: float = self.value(new_space, i, value,1)
+
+      if (self.minimize and new_value < value) or 
+      (not self.minimize and new_value > value):
+        best_options.append([new_value, new_space])
+
+    if best_options: 
+      if self.minimize:
+        _, best_option = min(enumerate(best_options), 
+        key=lambda x: x[1][0])
+      else:    
+        _, best_option = max(enumerate(best_options), 
+        key=lambda x: x[1][0])
+      
+      if (self.minimize and best_option[0] < value) or 
+      (not self.minimize and best_option[0] > value):
+        value = best_option[0]  
+        self.space = best_option[1]  
+\end{lstlisting}
 
 \end{document}
