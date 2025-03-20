@@ -28,8 +28,11 @@
 	frame=single,
 	backgroundcolor=\color{lightgray!20},
 	tabsize=4,
-	showstringspaces=false
+	showstringspaces=false,
+	breaklines=true,        % Permite que las líneas largas se dividan
+	linewidth=\linewidth    % Autoajuste al ancho del contenedor
 }
+
 
 %opening
 \title{Solución de problemas mediante ascensión de colinas}
@@ -395,49 +398,95 @@
 \clearpage
 \section{Código}
 
-El código a continuación describe la clase \textit{HillClimbing} y las funciones para los cuatro métodos ya vistos: \textit{Hill Climbing} \ref{lst:hc}, \textit{Steepest-Ascent Hill Climbing} \ref{lst:sahc}, \textit{Next-Ascent Hill Climbing} \ref{lst:nahc} y \textit{Random-Mutation Hill Climbing} \ref{lst:rmhc}.   
+\subsection{Hill Climbing}
 
-La clase requiere de los siguientes parámetros:
+Se define una clase de \textit{HillClimbing} que permite realizar las cuatro versiones del ascenso de colinas ya vistas en el código \ref{lst:cons}. Los parametros requeridos son los siguientes:
 \begin{itemize}
-	\item \textit{space}: Vector unidimensional que representa la solución.
-	\item \textit{information}: Información adicional opcional para evaluar la solución.
-	\item \textit{evaluateFunction}: Función de evaluación
-	\item \textit{valueFunction}: Define el comportamiento de la función de evaluación.
-	\item \textit{minimize}: Valor booleano que define si se desea maximizar o minimizar
+	\item \textit{space}: Es es el espacio de soluciones de cada problema.
+	\item \textit{aditional\_information}: Información adicional necesaria para calcular la función objetivo, puede de ser de cualquier tipo y es opcional según el problema.
+	\item \textit{objective\_function}: Es la función objetivo que recibe como parámetros la información adicional y una configuración del espacio de soluciones.
+	\item \textit{neighbours\_function}: Es la función que, dado una solución, obtiene todos los posibles vecinos realizando unicamente un movimiento. Esta función es especifica de cada problema.
+	\item \textit{max\_random}: \textit{Hill Climbing} se detiene cuando ya no encuentra una mejora, para evitar esto, se añade un numero máximo de iteraciones en las que se prueba con un vecino aleatorio antes de devolver una respuesta. 
 \end{itemize}
 
 \begin{lstlisting}[style=pythonstyle, label={lst:cons} ,caption={Constructor de la clase HillClimbing}]
-def __init__(self, 
-space: list[Any],
-information: list[Any],
-evaluateFunction: Callable,
-valueFunction: Callable,
-minimize: bool,
-): 
-
-  self.space = space
-  self.information = information
-  self.evaluateFunction = evaluateFunction
-  self.valueFunction = valueFunction
-  self.minimize = minimize  
+class HillClimbing:
+  def __init__(self, 
+    state, 
+    aditional_information, 
+    objective_function, 
+    neighbours_function, 
+    max_random = 30):
+  self.state = state
+  self.aditional_information = aditional_information
+  self.objective_function = objective_function
+  self.neighbours_function = neighbours_function
+  self.max_random = max_random
 \end{lstlisting}
 
-La función de \textit{Random-Mutation Hill Climbing} (\ref{lst:rmhc}), selecciona una posición aleatoria dentro del espacio para realizar la mutación. Después llama a la función \textit{valueFunction} y valida si hubo una mejora en la evaluación. Si lo fue, entonces se actualiza el espacio, en caso contrario continua a la siguiente época.
+El código \ref{lst:HC} se encarga de ejecutar el flujo de cualquier versión de \textit{Hill Climbing}. Primero itera sobre las épocas y después llama a alguno de los cuatro métodos. Si mejora la función objetivo, entonces se mueve a dicha configuración. Si la función objetivo se mantiene igual significa que alcanzo un óptimo local, por lo que se detiene.
 
-\begin{lstlisting}[style=pythonstyle, label={lst:rmhc} ,caption={Función Random-Mutation Hill Climbing}]
-def RMHC(self, epochs: int):
-  value: float = self.evaluate()
-
+\begin{lstlisting}[style=pythonstyle, label={lst:HC} ,caption={Función constructora HillClimbing}]
+def HillClimbing(self, method, epochs:int, print: bool):
+  current_state = self.state
   for _ in range(epochs):
-    i = random.randrange(0, len(self.space))    
+    next_state = method(current_state)
+    if (print):
+      self.Print(next_state)
+    if self.objective_function(self.aditional_information, 
+      next_state) == self.objective_function(self.
+      aditional_information, current_state):
+      break
+  current_state = next_state
 
-    new_space = self.space[:]
-    new_value: float = self.value(new_space, i, value, 3)
+self.state = current_state
+\end{lstlisting}
 
-    if (self.minimize and new_value < value) or 
-    (not self.minimize and new_value > value):
-      value = new_value
-      self.space = new_space[:]
+Los códigos \ref{lst:SHC}, \ref{lst:SAHC}, \ref{lst:NAHC} y \ref{lst:RMHC} muestran la implementación de los pseudocodigos \textit{Hill Climbing}, SAHC, NAHC y RMHC.
+
+La función \ref{lst:RMHC} tiene un ciclo adicional ya que busca de forma aleatoria dentro de los vecinos. Este limite se define en el constructor y permite explorar mas de una posibilidad, pues si no lo encuentra el algoritmo se termina. Es el numero de intentos requeridos antes de finalizar la búsqueda.
+
+\begin{lstlisting}[style=pythonstyle, label={lst:SHC} ,caption={Función Hill Climbing}]
+def SimpleHillClimbing(self, current_state):
+  for neighbour in self.neighbours_function(current_state):
+    if self.objective_function(self.aditional_information, neighbour) > self.objective_function(self.aditional_information, current_state):
+    current_state = neighbour
+      break    
+  return current_state
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:SAHC} ,caption={Función Steeptest Ascent Hill Climbing}]
+def SteepestAscentHillClimbing(self, current_state):
+  current_max = current_state
+  max = self.objective_function(self.aditional_information, current_state)
+  for neighbour in self.neighbours_function(current_state):
+    if self.objective_function(self.aditional_information, neighbour) > max:
+      max = self.objective_function(self.aditional_information, neighbour)
+      current_max = neighbour
+  return current_max
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:NAHC} ,caption={Función Next Ascent Hill Climbing}]
+def NextAscentHillClimbing(self, current_state)->list[any]:
+  current_min = current_state
+  min = float('inf')
+  for neighbour in self.neighbours_function(current_state):
+    neighbour_objective_function = self.objective_function(self.aditional_information, neighbour)
+    if (neighbour_objective_function > self.objective_function(self.aditional_information, current_state) and neighbour_objective_function < min):
+      min = neighbour_objective_function
+      current_min = neighbour
+  return current_min
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:RMHC} ,caption={Función Random-Mutation Hill Climbing}]
+def RandomMutationhillClimbing(self, current_state)->list[any]:       
+  for _ in range(self.max_random):
+    new_state = random.choice(self.neighbours_function(current_state))
+
+    if self.objective_function(self.aditional_information, new_state) > self.objective_function(self.aditional_information, current_state):
+      current_state = new_state
+    break
+  return current_state
 \end{lstlisting}
 
 \clearpage
@@ -587,83 +636,6 @@ position,value,option):
 
 	return value
 
-\end{lstlisting}
-
-
-\clearpage
-\section{Anexos}
-
-\begin{lstlisting}[style=pythonstyle, label={lst:hc} ,caption={Función Hill Climbing}]
-def HC(self, epochs: int):
-  value: float = self.evaluate()
-
-  for _ in range(epochs):
-    for i in range(len(self.space)):
-      new_space = self.space[:]
-      new_value: float = self.value(new_space, i, value)
-
-      if (self.minimize and new_value < value) or 
-      (not self.minimize and new_value > value):
-        value = new_value
-        self.space = new_space[:]
-\end{lstlisting}
-
-\begin{lstlisting}[style=pythonstyle, label={lst:sahc} ,caption={Función Steepest-Ascent Hill Climbing}]
-def SAHC(self, epochs: int):
-  value: float = self.evaluate()
-
-  for _ in range(epochs):
-    best_options:list = []
-
-    for i in range(len(self.space)):
-      new_space = self.space[:]
-      new_value: float = self.value(new_space, i, value,1)
-
-      if (self.minimize and new_value < value) or 
-      (not self.minimize and new_value > value):
-        best_options.append([new_value, new_space])
-
-    if best_options: 
-      if self.minimize:
-        _, best_option = min(enumerate(best_options), 
-        key=lambda x: x[1][0])
-      else:    
-        _, best_option = max(enumerate(best_options), 
-        key=lambda x: x[1][0])
-      
-      if (self.minimize and best_option[0] < value) or 
-      (not self.minimize and best_option[0] > value):
-        value = best_option[0]  
-        self.space = best_option[1]  
-\end{lstlisting}
-
-\begin{lstlisting}[style=pythonstyle, label={lst:nahc} ,caption={Función Next-Ascent Hill Climbing}]
-def NAHC(self, epochs: int):
-  value: float = self.evaluate()
-
-  for _ in range(epochs):
-    best_options:list = []
-
-    for i in range(len(self.space)):
-      new_space = self.space[:]
-      new_value: float = self.value(new_space, i, value,1)
-
-      if (self.minimize and new_value < value) or 
-      (not self.minimize and new_value > value):
-      best_options.append([new_value, new_space])
-
-    if best_options: 
-      if self.minimize:
-        _, best_option = min(enumerate(best_options), 
-        key=lambda x: x[1][0])
-      else:    
-        _, best_option = max(enumerate(best_options), 
-        key=lambda x: x[1][0])
-
-    if (self.minimize and best_option[0] < value) or 
-    (not self.minimize and best_option[0] > value):
-      value = best_option[0]  
-      self.space = best_option[1]  
 \end{lstlisting}
 
 	\clearpage

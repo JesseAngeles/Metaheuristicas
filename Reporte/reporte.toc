@@ -14,8 +14,8 @@
 \contentsline {subsection}{\numberline {3.2}Travel Salesman Problem (TSP)}{9}{}%
 \contentsline {subsection}{\numberline {3.3}Minimizar la función}{11}{}%
 \contentsline {section}{\numberline {4}Código}{13}{}%
-\contentsline {subsection}{\numberline {4.1}Knapsack problem}{15}{}%
-\contentsline {subsection}{\numberline {4.2}Travel Salesman}{17}{}%
-\contentsline {subsection}{\numberline {4.3}Minimizar la función}{19}{}%
-\contentsline {section}{\numberline {5}Anexos}{21}{}%
-\contentsline {section}{Referencias}{23}{}%
+\contentsline {subsection}{\numberline {4.1}Hill Climbing}{13}{}%
+\contentsline {subsection}{\numberline {4.2}Knapsack problem}{16}{}%
+\contentsline {subsection}{\numberline {4.3}Travel Salesman}{18}{}%
+\contentsline {subsection}{\numberline {4.4}Minimizar la función}{20}{}%
+\contentsline {section}{Referencias}{22}{}%
