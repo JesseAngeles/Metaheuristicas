@@ -43,17 +43,27 @@ class HillClimbing:
                 break
         return current_state
         
-    def HillClimbing(self, method, epochs:int, print: bool):
+    def HillClimbing(self, method, epochs:int, is_print: int):
         current_state = self.state
-        for _ in range(epochs):
+        for i in range(epochs):
             next_state = method(current_state)
-            if (print):
+
+            if is_print == 1:
                 self.Print(next_state)
+            elif is_print == 2:
+                self.PrintObjective(next_state)
+
             if self.objective_function(self.aditional_information, next_state) == self.objective_function(self.aditional_information, current_state):
+                if is_print:
+                    print(f"No improve in {i}")
                 break
             current_state = next_state
         
         self.state = current_state
     
+    def PrintObjective(self, state):
+        print(f"objective: {self.objective_function(self.aditional_information, state)}")
+
+
     def Print(self, state):
         print(f"state: {state}: {self.objective_function(self.aditional_information, state)}")

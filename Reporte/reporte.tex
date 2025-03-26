@@ -81,7 +81,7 @@
 	
 	\centerline{\bf Ingeniería en Inteligencia Artificial, Metaheuristicas}
 	
-	\centerline{\bf Fecha: 13-03-24}
+	\centerline{\bf Fecha: \today}
 	
 	\centerline{}
 	
@@ -129,11 +129,11 @@
 		
 	\section{Hill Climbing}
 	
-	Es un algoritmo de búsqueda local que continuamente se mueve en la dirección que optimice el resultado. Dado un estado inicial, el algoritmo buscara aquel vecino que mejore su posición actual para moverse a el, cuando ninguno de los vecinos ofrece un mejor resultado, entonces se ha encontrado un óptimo local \cite{HC}.
+	Es un algoritmo de búsqueda local que continuamente se mueve en la dirección que optimice el resultado. Dado un estado inicial, el algoritmo buscara aquel vecino que mejore su posición actual para moverse a el, cuando ninguno de los vecinos ofrece un mejor resultado, entonces se ha encontrado un óptimo local \cite{1}.
 	
 	Este algoritmo sigue el mismo principio de subir una montaña, pues siempre se seguirá la ruta que tenga mayor altitud. Sin embargo, esto no nos garantiza que ``escalemos'' la montaña mas alta, sino la que tenemos mas cerca (dada nuestra condición inicial).
 	
-	Debido a esto, se considera a \textit{Hill Climbing} un algoritmo Greedy local, pues dada una condición inicial, unicamente es capaz de encontrar óptimos locales (Pueden ser máximos o mínimos dependiendo del tipo de problema) \cite{HC}.
+	Debido a esto, se considera a \textit{Hill Climbing} un algoritmo Greedy local, pues dada una condición inicial, unicamente es capaz de encontrar óptimos locales (Pueden ser máximos o mínimos dependiendo del tipo de problema) \cite{1}.
 	
 	Este algoritmo debe de tener los siguientes elementos:
 	\begin{itemize}
@@ -174,13 +174,20 @@
 
 	\subsection{Aplicaciones}
 	
+	\begin{itemize}
+		\item Reconocimiento de placas vehiculares. Permite centrar la atención de un software de visión artificial enfocarse en áreas de alto contraste como pueden ser semáforos, placas de vehículos y letreros \cite{2}.
+		\item Partición de circuitos integrados mediante un algoritmo memetico basado en el algoritmo de escalada de colinas reduciendo el tiempo de convergencia, disminuye la comunicación entre sub-circuitos y disminuye el consumo energético \cite{3}.
+		\item  Nuevo método de optimización para encontrar el gradiente de una función \cite{4}.
+		\item Clasificación y división de datos en conjuntos de entrenamientos y pruebas para grandes datasets. Se eliminan instancias redundantes, erróneas o ruidosas \cite{5}.
+	\end{itemize}
+	
 	\subsection{Resultados de Forrest y Mitchel}
 
 	Al evaluar diferentes estrategias de ascensión de colinas, los autores demuestran que no existe un algoritmo ``óptimo'' para todos los casos, sino que cada variación del algoritmo se enfoca en un aspecto diferentes. Mientras que SAHC y NAHC no lograron encontrar el optimo en el tiempo estipulado, RMHC lo logra en un tiempo significativamente mas rápido al realizar menos evaluación de la función de aptitud.
 	
 	Ciertamente existen  algunas limitaciones. Las funciones \textit{Royal Road} son intencionalmente simples que favorece ciertos comportamientos. Estas condiciones ideales pueden discernir los resultados de aplicaciones a problemas reales, con mas ruido, o con mayor complejidad. Ademas, estos algoritmos dependen unicamente de los valores de la función de aptitud, no considera otros aspectos que podrían ser esenciales para mejorar los resultados o la velocidad en que se obtienen.
 	
-	Estas condiciones ideales permiten al algoritmo de ascensión de colinas tener mejores resultados que los algoritmos genéticos, pero puede que esta ventaja sea exclusiva por la naturaleza del problema que se desea resolver, evaluar diferentes escenarios permitiría explorar diferentes comportamientos ante condiciones volátiles.
+	Estas condiciones ideales permiten al algoritmo de ascensión de colinas tener mejores resultados que los algoritmos genéticos, pero puede que esta ventaja sea exclusiva por la naturaleza del problema que se desea resolver, evaluar diferentes escenarios permitiría explorar diferentes comportamientos ante condiciones volátiles \cite{6}.
 
 
 	\clearpage
@@ -396,9 +403,9 @@
 	\end{itemize}
 
 \clearpage
-\section{Código}
+\subsection{Código}
 
-\subsection{Hill Climbing}
+\subsubsection{Hill Climbing}
 
 Se define una clase de \textit{HillClimbing} que permite realizar las cuatro versiones del ascenso de colinas ya vistas en el código \ref{lst:cons}. Los parametros requeridos son los siguientes:
 \begin{itemize}
@@ -490,159 +497,244 @@ def RandomMutationhillClimbing(self, current_state)->list[any]:
 \end{lstlisting}
 
 \clearpage
-\subsection{Knapsack problem}
+\subsubsection{Knapsack problem}
 
-En el código \ref{lst:knapsack} se definen los parametros los cuales son:
-\begin{itemize}
-	\item \textit{epochs}: Numero de iteraciones
-	\item \textit{space}: Vector de valores booleanos que define si el objeto se mete en la mochila
-	\item \textit{information}: Arreglo de elementos con su peso y valor respectivo. El ultimo valor es el peso máximo de la mochila.  
-\end{itemize}
+La función objetivo se define en el código \ref{lst:knapsack}. Primero itera sobre todos los elementos que están dentro de la bolsa y suma los pesos como los valores correspondientes. Si el peso es menor al peso máximo entonces devuelve el valor total, en caso contrario devuelve la diferencia de los pesos.
 
-\begin{lstlisting}[style=pythonstyle, label={lst:knapsack} ,caption={Parametros de Knapsack problem}]
-epochs: int = 2
-space: list[bool] = [False, False, False]
-information: list = [[3, 2], [3, 4], [5, 6], 10]
+\begin{lstlisting}[style=pythonstyle, label={lst:knapsack} ,caption={Función objetivo de Knapsack problem}]
+def objectiveFunction(aditional_information, state):
+  max_weight = aditional_information[-1]
+  weight: int = 0
+  value: int = 0
+
+  for i in range(len(state)):
+    if state[i]:
+      weight += aditional_information[i][0]
+      value += aditional_information[i][1]
+
+  if weight > max_weight:
+    return max_weight - weight
+    
+  return value
 \end{lstlisting}
 
-La función de evaluación \ref{lst:knapsackEvaluate} extrae el peso máximo de la mochila, y almacena la suma del peso y del valor de todos los atributos que, en la configuración a probar, se encuentran en la mochila. 
+Para obtener los vecinos de un un estado se utiliza la función de \cite{lst:knapsackEvaluate}. Esta función itera sobre cada elemento de la configuración y aplica Bit Flit.
 
-\begin{lstlisting}[style=pythonstyle, label={lst:knapsackEvaluate} ,caption={Evaluación de Knapsack problem}]
-def evaluateKnapsack(space: list[bool], information:list):
-	max_weight = information[-1]
-	weight: int = 0
-	value: int = 0
-	
-	for i in range(len(space)):
-	  if space[i]:
-	  weight += information[i][0]
-	  value += information[i][1]
-	
-	  if weight > max_weight:
-	    return -1
-	
-return value
+\begin{lstlisting}[style=pythonstyle, label={lst:knapsackEvaluate} ,caption={Vecindad de Knapsack problem}]
+def neighboursFunction(state:list[any])->list[list[any]]:
+  neighbours = []
+  for i in range(len(state)):
+    neighbour = state[:]
+    neighbour[i] = not neighbour[i]
+    neighbours.append(neighbour)
+
+  return neighbours
 \end{lstlisting}
 
-Como la operación   unicamente requiere intercambiar un elemento en la posición $i$ del vector. Entonces la función \ref{lst:knapsackValue} unicamente intercambia el valor y valida si mejora la respuesta. 
+La información adicional requerida son $n$ pares de valores que almacenan los pesos y los valores respectivamente. El numero en la ultima posición representa el peso máximo de la mochila.
 
-\begin{lstlisting}[style=pythonstyle, label={lst:knapsackValue} ,caption={Validación de Knapsack problem}]
-def valueKnapsack(space,information,position,value,option):
-	space[position] = not space[position]
-	new_value: float = evaluateKnapsack(space, information)
-	
-	if new_value > value:
-		return new_value
-	return value
+\begin{lstlisting}[style=pythonstyle, label={lst:knapsackValue} ,caption={Parametros de knapsack problem}]
+epochs:int = 100
+state:list[bool] = [False, False, False]
+aditional_information = [[3, 2], [3, 4], [5, 6], 10]
 \end{lstlisting}
 
 \clearpage
-\subsection{Travel Salesman}
+\subsubsection{Travel Salesman}
 
-En el código \ref{lst:sales} se definen los parametros los cuales son:
-\begin{itemize}
-	\item \textit{epochs}: Numero de iteraciones
-	\item \textit{space}: Vector de valores enteros que define la ruta de viaje. Este vector es una permutación de las ciudades.
-	\item \textit{information}: Matriz de adyacencia sobre las distancias entre las ciudades.  
-\end{itemize}
+En el código \ref{lst:sales} se definen la función objetivo. La función itera sobre la posible respuesta y busca las intersecciones en la matriz para obtener la distancia entre dos ciudades. Dado que queremos minimizar el problema, regresamos el numero negativo, entonces entre mayor sea (Mas cercano al cero), mejor resultado obtendrá.
 
-\begin{lstlisting}[style=pythonstyle, label={lst:sales} ,caption={Parametros de Knapsack problem}]
-epochs: int = 10
-space: list[int] = [0, 1, 2, 3, 4]
-information:list[list[int]] = [
-	[0, 10, 15, 20, 25],  
-	[10, 0, 35, 30, 40],  
-	[15, 35, 0, 45, 50],  
-	[20, 30, 45, 0, 55],  
-	[25, 40, 50, 55, 0] 
-]
+\begin{lstlisting}[style=pythonstyle, label={lst:sales} ,caption={Función objetivo de Travel Salesman problem}]
+def objective_function(aditional_information, state):
+  distance = 0
+  num_cities:int = len(state)
+
+  for i in range(num_cities):
+    current_city = state[i]
+    next_city = state[(i + 1) % num_cities]  
+    distance += aditional_information[current_city][next_city]
+
+  return -distance
 \end{lstlisting}
 
-La función de evaluación \ref{lst:travelEvaluate} calcula la distancia recorrida por el agente viajero con base en la secuencia del espacio actual. 
+La función \ref{lst:travelEvaluate} obtiene la vecindad de un estado. Se consideran como vecindades todas aquellas configuraciones que se pueden alcanzar realizando unicamente un intercambio de elementos.
 
-\begin{lstlisting}[style=pythonstyle, label={lst:travelEvaluate} ,caption={Evaluación de Travel Salesman Problem}]
-def evaluateTravelSalesman(space,information):
-	distance:int = 0
-	num_cities:int = len(space)
-	
-	for i in range(num_cities):
-	  current_city = space[i]
-	  next_city = space[(i + 1) % num_cities]  
-	  distance += information[current_city][next_city]
-	
-	return distance
+\begin{lstlisting}[style=pythonstyle, label={lst:travelEvaluate} ,caption={Vecindad de Travel Salesman Problem}]
+def neighboursFunction(state:list[any])->list[list[any]]:
+  neighbours = []
+  for i in range(len(state) - 1):
+    for j in range(len(state)):
+      if i == j:
+        continue
+      neighbour = state[:]
+      neighbour[i], neighbour[j] = neighbour[j], neighbour[i]
+      neighbours.append(neighbour)
+
+return neighbours
 \end{lstlisting}
 
-El código a continuación muestra unicamente el comportamiento para la función de $Random-Mutation$, pero es fácilmente adaptable a los diferentes casos según la variable \textit{option}.
+La información adicional es la matriz de adyacencia.
 
-A diferencia de \textit{Knapsack problem}, aquí existen multiples estados. Es por esto que se selecciona un indice de manera arbitraria para hacer el intercambio de valores. Si el intercambio proporciona una ruta mas corta, entonces se actualiza el espacio la el valor de dicha ruta, tal como se muestra en \ref{lt:TravelValue}.  
-
-\begin{lstlisting}[style=pythonstyle, label={lst:TravelValue} ,caption={Validación de Travel Salesman problem}]
-def valueTravelSalesman(space,info,pos,value,option):
-if option == 3:
-  new_space = space[:]
-  i = random.randrange(0, len(space))
-  new_space[pos],new_space[i]=new_space[i],new_space[pos]
-  new_value=evaluateTravelSalesman(new_space,info)
-
-  if new_value < value: 
-    space[:] = new_space[:]
-    return new_value
-return value
+\begin{lstlisting}[style=pythonstyle, label={lst:TravelValue} ,caption={Parametros de Travel Salesman problem}]
+epochs:int = 100
+state:list[int] = [0,1,2,3,4]
+aditional_information = [[0,10,15], [10,0,35],[15,35,0]] 
 \end{lstlisting}
 
 \clearpage
-\subsection{Minimizar la función}
+\subsubsection{Minimizar la función}
 
-En el código \ref{lst:sumfun} se definen los parametros los cuales son:
-\begin{itemize}
-	\item \textit{epochs}: Numero de iteraciones
-	\item \textit{space}: Vector de valores booleanos que define si el objeto se mete en la mochila
-	\item \textit{information}: Arreglo vacio. No se definen valores ya que el calculo de la función de validación es mediante los elementos que se encuentren en el espacio.
-\end{itemize}
+La función objetivo no utiliza la información adicional, pues son los propios elementos los que permite calcular el valor. En el código \ref{lst:sumfun} itera sobre todos los y los eleva al cuadrado, dado que es un problema de minimización se invierte el signo.
 
-\begin{lstlisting}[style=pythonstyle, label={lst:sumfun} ,caption={Parametros de Función de suma}]
-epochs: int = 2
-space: list[int] = [0, 1, 2, 3, 4]
-information:list = []
+\begin{lstlisting}[style=pythonstyle, label={lst:sumfun} ,caption={Función objetivo de Función de suma}]
+def objectiveFunction(aditional_information, state):
+  total_sum:float = 0
+
+  for val in state:
+    total_sum += val**2
+
+  return -total_sum
 \end{lstlisting}
 
-La función de evaluación \ref{lst:funsumEvaluate} suma el cuadrado de los elementos en el  espacio. 
+La función para obtener los vecinos \ref{lst:funsumEvaluate} considera como vecinos todas aquellas configuraciones que pueden ser alcanzadas aumentando o disminuyendo en una unidad un parámetro (Siempre que es en el rango).
 
-\begin{lstlisting}[style=pythonstyle, label={lst:funsumEvaluate} ,caption={Evaluación de Función de suma}]
-def evaluateSumFunction(space, information):
-	total_sum:float = 0
-	
-	for cell in space:
-		total_sum += cell**2
-	
-	return total_sum\end{lstlisting}
+\begin{lstlisting}[style=pythonstyle, label={lst:funsumEvaluate} ,caption={Vecinos de Función de suma}]
+def neighboursFunction(state:list[any])->list[list[any]]:
+  neighbours = []
+  for i in range(len(state)):
+    neighbour1 = state[:]
+    neighbour2 = state[:]
+    neighbour1[i] = neighbour1[i] - 1
+    if neighbour1[i] < -10:
+      neighbour1[i] = 10 
 
-Se considera intercambiar un elemento de forma aleatoria por un valor aleatorio dentro del rango de $[-10, 10]$. Se valida si el resultado mejor el resultado (disminuye), si es asi, entonces actualiza el espacio.
+    neighbour2[i] = neighbour2[i] + 1
+    if neighbour2[i] > 10:
+      neighbour2[i] = -10 
 
-\begin{lstlisting}[style=pythonstyle, label={lst:funSumValue} ,caption={Validación de Función suma}]
-def valueSumfunction(space,information,
-position,value,option):
+    neighbours.append(neighbour1)
+    neighbours.append(neighbour2)
 
-  if option == 3:
-    new_space = space[:]
-    val=random.randrange(-10, 10)
-    new_space[position] = val
-    new_value=evaluateSumFunction(new_space,information)
-
-    if new_value < value:    
-      space[:] = new_space[:]
-    return new_value
-
-	return value
-
+  return neighbours
 \end{lstlisting}
 
+Este problema no requiere información adicional, así que unicamente es necesario definir la configuración inicial.
+
+\begin{lstlisting}[style=pythonstyle, label={lst:funSumValue} ,caption={Parametros de Función suma}]
+epochs:int = 100
+state:list[int] = [0,1,2,3,4]
+aditional_information:list = []
+\end{lstlisting}
+
+\section{Problemas de optimización CEC 2017}
+
+\subsection{Código}
+
+Para el algoritmo de \textit{Random Mutation Hill Climbing} se usa el mismo código que para los problemas anteriores (Código \ref{lst:HC} y \ref{lst:RMHC}), por lo que unicamente es necesario diseñar la función objetivo y la función para obtener la vecindad.
+
+La función objetivo es dada por el propio problema de optimización la cual recibe como parámetros el vector del estado actual (código \ref{lst:cec_objs}).
+
+\begin{lstlisting}[style=pythonstyle, label={lst:cec_objs} ,caption={Función objetivo}]
+def objectiveFunction(aditional_information, state):
+  return -aditional_information([state])[0]
+\end{lstlisting}
+
+Por otro lado, el código \ref{lst:cec_nei} muestra la función para obtener a los vecinos. Dado que las funciones existen en un espacio de valores reales, se opta por avanzar una cantidad aleatoria en cualquier dirección.
+
+\begin{lstlisting}[style=pythonstyle, label={lst:cec_nei} ,caption={Función de vecindad}]
+def neighboursFunction(state):
+  neighbours = []
+  for i in range(len(state)):
+    noise = np.random.normal()
+    neighbour = state.copy()
+    neighbour[i] += noise
+    neighbours.append(neighbour)
+  return neighbours
+\end{lstlisting}
+
+Para realizar diferentes pruebas, se utilizan los códigos \ref{lst:run} y \ref{lst:par}. 
+
+La función \textit{run\_hill\_climbing} recibe como parámetros la función objetivo, el numero de dimensiones, las épocas de entrenamiento y el numero de iteraciones que se desea repetir el proceso. El calculo se almacena en una lista que almacena el valor inicial, el optimo alcanzado y el tiempo de ejecución.
+
+\begin{lstlisting}[style=pythonstyle, label={lst:run} ,caption={Función run\_hill\_climbing}]
+def run_hill_climbing(function, dimension, epochs, iterations):
+  results = []
+
+  for i in range(iterations):
+    state = np.random.uniform(low=-100, high=100, size=dimension).tolist()
+    hc = HillClimbing(np.array(state), function, objectiveFunction, neighboursFunction)
+    start_time = time.time()
+
+    # Valores iniciales
+    initial_objective = objectiveFunction(function, hc.state)
+    hc.HillClimbing(hc.RandomMutationhillClimbing, epochs, is_print=0)
+
+    # Tiempo de ejecucion    
+    execution_time = time.time() - start_time
+
+    # Valores finales
+    final_objective = objectiveFunction(function, hc.state)
+
+    # Almacenar el resultado
+    result = {
+	  "function": function.__name__,
+	  "iteration": i + 1,
+	  "initial_objective": initial_objective,
+	  "final_objective": final_objective,
+	  "execution_time": execution_time  
+    }
+
+    results.append(result)
+
+  return results
+\end{lstlisting}
+
+Por otro lado, la función \textit{parallel\_hill\_climbing} se encarga de obtener los mínimos de forma paralela. Como nuevos parámetros se define el nombre del archivo de salida y el numero máximo de procesos en paralelo.
+
+\begin{lstlisting}[style=pythonstyle, label={lst:par} ,caption={Función parallel\_hill\_climbing}]
+def parallel_hill_climbing(dimension, epochs, iterations, num_workers, output_file):
+  # Funciones a optimizar
+  all_functions = {f1,f2,f3,f4,f5,f6,f7,f8,f9,f10}
+
+  #  Empaquetar argumentos adicionales
+  run_partial = partial(run_hill_climbing, dimension=dimension, epochs=epochs, iterations=iterations)
+
+  # Ejecutar en paralelo
+  all_results = []
+
+  with ProcessPoolExecutor(max_workers=num_workers) as executor:
+    futures = [executor.submit(run_partial, f) for f in all_functions]
+
+    for future in futures:
+      all_results.extend(future.result())
+
+  # Exportar resultados a JSON
+  with open(output_file, "w") as f:
+    json.dump(all_results, f, indent=4)
+\end{lstlisting}
+
+Por lo únicamente es necesario llamar a la función especificando los parámetros, de la misma forma que se muestra en el código \ref{lst:ejem} para obtener un archivo tipo \textit{JSON} con los resultados.
+
+\begin{lstlisting}[style=pythonstyle, label={lst:ejem} ,caption={Llamada de la función parallel\_hill\_climbing}]
+parallel_hill_climbing(
+  dimension=10,                        
+  epochs=1000000,             
+  iterations=10,                     
+  num_workers=28,          
+  output_file="hill_climbing_results.json", 
+)
+\end{lstlisting}
+
+\subsection{Resultados}
+
+Considerando vectores de tamaño 100
+
+
+
+	% Referencias
 	\clearpage
-\addcontentsline{toc}{section}{Referencias}
-\begin{thebibliography}{99}
-	\bibitem{HC}
-	T. b Kute. MITU Skillologies – Aritificial Intelligence, Data Science Training and Development – Open Source Technocrats : Artificial Intelligence, Data Science, Machine Learning, Training in Pune, Maharashtra, India. Accedido el 11 de marzo de 2025. [En línea]. Disponible:\url{ https://mitu.co.in/wp-content/uploads/2022/04/8.-Hill-Climbing-Algorithm.pdf}
-\end{thebibliography}
+	\addcontentsline{toc}{section}{Referencias}
+	\bibliographystyle{IEEEtran}
+	\bibliography{referencias}
 
 \end{document}
