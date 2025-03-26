@@ -117,7 +117,7 @@
 	\bigskip
 	
 	\begin{abstract} 
-		Se describe el comportamiento del algoritmo \textit{Hill Climbing} para resolver problemas de optimización local. Se estudian tres versiones del algoritmo, ventajas y desventanas, pseudocodigo y propuestas para resolver dos problemas famosos en computación: \textit{Knapsack problem} y \textit{Travel Salesman problem}.
+		Se describe el comportamiento del algoritmo \textit{Hill Climbing} para resolver problemas de optimización local. Se estudian tres versiones del algoritmo, ventajas y desventanas, pseudocodigo y propuestas para resolver problemas en computación: \textit{Knapsack problem}, \textit{Travel Salesman problem} y problemas de optmización del CEC 2017.
 	\end{abstract}
 	
 	\keywords{Algoritmo, Hill Climibing, Pseudocódigo, Resultado óptimo}
@@ -628,7 +628,115 @@ aditional_information:list = []
 
 \section{Problemas de optimización CEC 2017}
 
+En el documento \cite{cec} se presentan una serie de problemas sobre optimización numérica de parámetros reales. En este reporte se analizan las 10 primeras funciones que cumplen con la siguiente definición:
+\begin{itemize}
+	\item Todas las funciones son problemas de minimización definidos de la siguiente manera:
+	\[ min f(x), \; x = [x_1, x_2, \dots, x_D]^T \]
+	Donde:
+	\begin{itemize}
+		\item $x$ es el vector de variables de dimensión $D$ que representa la solución del problema.
+		\item $D$ es el numero de dimensiones del problema.
+	\end{itemize}
+	
+	\item El óptimo global (la mejor solución) se encuentra desplazada del origen para evitar respuestas que asumen que la respuesta esta cerca del origen:
+	\[ o = [ o_1, o_2, \dots, o_D ]^T \]
+	Donde $o$ es el vector del optimo global desplazado.
+	
+	El valor óptimo se distribuye de manera aleatoria en el rango de $o \in [-80, 80]^D$
+	
+	\item Las funciones son escalables, es decir, el numero de dimensiones $D$ puede variar.
+	
+	\item El rango de búsqueda de todas las funciones para las variables se delimita por $x \in [-100, 100]^D$
+	
+	\item Implementación de matrices de rotación: Las variables interactúan entre ellas para volver el problema más difícil.
+	
+	\item Para simular problemas reales, las variables se dividen de manera aleatoria en subcomponentes. Cada subcomponente tiene su propia matriz de rotación.
+	
+	\end{itemize}
+	
+	\subsection{Funciones}
+	
+	A continuación se definen las 10 primeras funciones.
+	
+	\subsubsection*{1) Bent Cigar Function}
+	\[
+	f(x) = x_1^2 + 10^6 \sum_{i=2}^{D} x_i^2
+	\]
+	
+	\subsubsection*{2) Zakharov Function}
+	\[
+	f(x) = \sum_{i=1}^{D} x_i^2 + \left( 0.5 \sum_{i=1}^{D} i x_i \right)^2 + \left( 0.5 \sum_{i=1}^{D} i x_i \right)^4
+	\]
+	
+	\subsubsection*{3) Rosenbrock's Function}
+	\[
+	f(x) = \sum_{i=1}^{D-1} \left[ 100 (x_{i+1} - x_i^2)^2 + (x_i - 1)^2 \right]
+	\]
+	
+	\subsubsection*{4) Rastrigin's Function}
+	\[
+	f(x) = \sum_{i=1}^{D} \left[ x_i^2 - 10 \cos(2 \pi x_i) + 10 \right]
+	\]
+	
+	\subsubsection*{5) Expanded Schaffer's F6 Function}
+	\[
+	g(x, y) = 0.5 + \frac{\sin^2(\sqrt{x^2 + y^2}) - 0.5}{(1 + 0.001(x^2 + y^2))^2}
+	\]
+	
+	\[
+	f(x) = \sum_{i=1}^{D-1} g(x_i, x_{i+1})
+	\]
+	
+	\subsubsection*{6) Lunacek Bi-Rastrigin Function}
+	\[
+	f(x) = \min \left( \sum_{i=1}^{D} (x_i - \mu_0)^2, dD + s \sum_{i=1}^{D} (x_i - \mu_1)^2 \right) 
+	+ 10 \sum_{i=1}^{D} \left[ 1 - \cos(2 \pi z_i) \right]
+	\]
+	
+	\[
+	\mu_0 = 2.5, \quad \mu_1 = -\sqrt{\frac{\mu_0^2}{d}}
+	\]
+	
+	\subsubsection*{7) Non-Continuous Rotated Rastrigin's Function}
+	\[
+	f(x) = \sum_{i=1}^{D} \left[ z_i^2 - 10\cos(2\pi z_i) + 10 \right]
+	\]
+	
+	\[
+	z_i = \text{Tosz}(\text{Tasy}(x_i))
+	\]
+	
+	\subsubsection*{8) Levy Function}
+	\[
+	f(x) = \sin^2(\pi w_1) + \sum_{i=1}^{D-1} (w_i - 1)^2 \left[ 1 + 10\sin^2(\pi w_i + 1) \right] + (w_D - 1)^2 \left[ 1 + \sin^2(2\pi w_D) \right]
+	\]
+	
+	\[
+	w_i = 1 + \frac{x_i - 1}{4}
+	\]
+	
+	\subsubsection*{9) Modified Schwefel's Function}
+	\[
+	f(x) = 418.9829 D - \sum_{i=1}^{D} x_i \sin(\sqrt{|x_i|})
+	\]
+	
+	\subsubsection*{10) High Conditioned Elliptic Function}
+	\[
+	f(x) = \sum_{i=1}^{D} 10^{6 \frac{i-1}{D-1}} x_i^2
+	\]
+	
+	Cuyas graficas se observan en la figura \ref{fig:cec}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1\linewidth]{img/cec}
+		\caption{Superficies ploteadas de las 10 primeras funciones para dos dimensiones \cite{plot}}
+		\label{fig:cec}
+	\end{figure}
+	
 \subsection{Código}
+
+Para los problemas del CEC 2017, se utilizaron las funciones de Duncan Tilley en Python en el repositorio \textit{cec2017-py} \cite{git}.
 
 Para el algoritmo de \textit{Random Mutation Hill Climbing} se usa el mismo código que para los problemas anteriores (Código \ref{lst:HC} y \ref{lst:RMHC}), por lo que unicamente es necesario diseñar la función objetivo y la función para obtener la vecindad.
 
@@ -727,8 +835,56 @@ parallel_hill_climbing(
 
 \subsection{Resultados}
 
-Considerando vectores de tamaño 100
+Considerando vectores de tamaño 100, un millón de épocas, 20 iteraciones sobre cada función y 28 núcleos de procesador para trabajar de forma paralela, se obtuvieron los resultado de la tabla \ref{tab:res} y la tabla \ref{tab:tiempo}. Es necesario mencionar que, pese al número de épocas, la búsqueda se detiene cuando no encuentra una mejor opción.
 
+Adicionalmente,  la clase \textit{Hill Climbing} siempre busca maximizar el resultado, por lo que para búsqueda de mínimos locales, se tiene que cambiar el signo en la función objetivo, por lo que los resultados obtenidos en la tabla \ref{tab:res} tienen signo negativo.
+
+La tabla \ref{tab:tiempo} por su parte, muestra las estadísticas obtenidas pero del tiempo de ejecución en segundos. 
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|p{2.1cm}|}  
+		\hline
+		\textbf{f(x)} & \textbf{Peor} & \textbf{Mejor} & \textbf{Promedio} & \textbf{Mediana} & \textbf{Desviación estándar} \\  
+		\hline
+		f1  & -1.4336e+12 & -2.1804e+11 & -6.3137e+11 & -6.0096e+11 & 0.4964 \\
+		f2  & -8.82e+236  & -2.27e+165  & -4.41e+235  & -4.42e+212  & 48.0865 \\
+		f3  & -1.0953e+6  & -7.1786e+5  & -9.3153e+5  & -9.3192e+5  & 0.0963 \\
+		f4  & -1620.66     & -588.09     & -799.38     & -731.21     & 0.2302 \\
+		f5  & -3327.35     & -1840.57    & -2757.48    & -2785.81    & 0.1245 \\
+		f6  & -742.87      & -713.81     & -728.13     & -729.15     & 0.0101 \\
+		f7  & -18239.97    & -13219.15   & -15362.38   & -15198.37   & 0.0883 \\
+		f8  & -3694.17     & -2613.38    & -3257.37    & -3306.11    & 0.0894 \\
+		f9  & -122972.20   & -64916.02   & -90212.80   & -89889.81   & 0.1456 \\
+		f10 & -22817.03    & -16102.13   & -19675.01   & -19759.43   & 0.0890 \\
+		\hline
+	\end{tabular}
+	\caption{Estadísticas de resultados de las funciones.}
+	\label{tab:res}
+\end{table}
+
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|p{2.1cm}|}  
+		\hline
+		\textbf{f(x)} & \textbf{Peor} & \textbf{Mejor} & \textbf{Promedio} & \textbf{Mediana} & \textbf{Desviación estándar} \\  
+		\hline
+		f1 & 1.3949 & 2.5994 & 2.1067 & 2.0907 & 0.3010 \\
+		f2 & 0.0037 & 1.0159 & 0.1740 & 0.0304 & 0.2920 \\
+		f3 & 0.0379 & 0.5611 & 0.2319 & 0.1944 & 0.1462 \\
+		f4 & 3.2157 & 5.2511 & 4.1232 & 4.0357 & 0.5391 \\
+		f5 & 0.2728 & 0.6614 & 0.3403 & 0.3147 & 0.0875 \\
+		f6 & 0.1920 & 0.4877 & 0.3026 & 0.2955 & 0.0739 \\
+		f7 & 0.1070 & 0.2585 & 0.1833 & 0.1962 & 0.0406 \\
+		f8 & 0.0974 & 1.2510 & 0.3685 & 0.3258 & 0.2238 \\
+		f9 & 0.0611 & 0.5272 & 0.1840 & 0.1092 & 0.1420 \\
+		f10 & 0.2390 & 1.4073 & 0.4699 & 0.3321 & 0.3459 \\
+		\hline
+	\end{tabular}
+	\caption{Estadísticas de tiempo de ejecución por función.}
+	\label{tab:tiempo}
+\end{table}
 
 
 	% Referencias
