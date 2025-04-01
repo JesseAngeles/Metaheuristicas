@@ -21,17 +21,17 @@ def objective_function(aditional_information, state):
         
     return -distance
 
-def neighboursFunction(state:list[any])->list[list[any]]:
+def neighboursFunction(state:list[any], index:int)->list[list[any]]:
     neighbours = []
-    for i in range(len(state) - 1):
-        for j in range(len(state)):
-            if i == j:
-                continue
-            
-            neighbour = state[:]
-            neighbour[i], neighbour[j] = neighbour[j], neighbour[i]
-            neighbours.append(neighbour)
+    for i in range(len(state)):
+        if index == i:
+            continue
     
+        neighbour = state[:]
+        neighbour[i], neighbour[index] = neighbour[index], neighbour[i]
+        
+        neighbours.append(neighbour)
+        
     return neighbours
 
 tsp = HillClimbing(state, aditional_information, objective_function, neighboursFunction)

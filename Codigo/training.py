@@ -12,15 +12,15 @@ def objectiveFunction(aditional_information, state):
 
 
 # Función de vecindad
-def neighboursFunction(state):
-    neighbours = []
-    for i in range(len(state)):
-        noise = np.random.normal()
-        neighbour = state.copy()
-        neighbour[i] += noise
-        neighbours.append(neighbour)
-    return neighbours
-
+def neighboursFunction(state, index: int):
+    noise = np.random.normal()
+    neighbour1 = state[:]
+    neighbour2 = state[:]
+    
+    neighbour1[index] -= noise
+    neighbour2[index] += noise
+    
+    return [neighbour1, neighbour2]
 
 # Función para ejecutar cada optimización de forma paralela
 def run_hill_climbing(function, dimension, epochs, iterations):

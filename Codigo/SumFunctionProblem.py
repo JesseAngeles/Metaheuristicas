@@ -12,23 +12,20 @@ def objectiveFunction(aditional_information, state):
    
     return -total_sum
 
-def neighboursFunction(state:list[any])->list[list[any]]:
-    neighbours = []
-    for i in range(len(state)):
-        neighbour1 = state[:]
-        neighbour2 = state[:]
-        neighbour1[i] = neighbour1[i] - 1
-        if neighbour1[i] < -10:
-           neighbour1[i] = 10 
-        
-        neighbour2[i] = neighbour2[i] + 1
-        if neighbour2[i] > 10:
-           neighbour2[i] = -10 
-        
-        neighbours.append(neighbour1)
-        neighbours.append(neighbour2)
+def neighboursFunction(state:list[any], index:int)->list[list[any]]:
+    neighbour1 = state[:]
+    neighbour2 = state[:]
     
-    return neighbours
+    neighbour1[index] -= 1
+    neighbour2[index] += 1
+    
+    if neighbour1[index] < -10:
+        neighbour1[index] = 10 
+        
+    if neighbour2[index] > 10:
+        neighbour2[index] = -10 
+
+    return [neighbour1,neighbour2]
 
 sf = HillClimbing(state, aditional_information, objectiveFunction, neighboursFunction)
 

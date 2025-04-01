@@ -19,16 +19,13 @@ def objectiveFunction(aditional_information, state):
 
     return value
 
-def neighboursFunction(state:list[any])->list[list[any]]:
-    neighbours = []
-    for i in range(len(state)):
-        neighbour = state[:]
-        neighbour[i] = not neighbour[i]
-        neighbours.append(neighbour)
+def neighbourFunction(state:list[any], index:int)->list[list[any]]:
+    neighbour = state[:]
+    neighbour[index] = not neighbour[index]
     
-    return neighbours
+    return [neighbour]
 
-ks = HillClimbing(state, aditional_information, objectiveFunction, neighboursFunction)
+ks = HillClimbing(state, aditional_information, objectiveFunction, neighbourFunction)
 
 ks.Print(ks.state)
 ks.HillClimbing(ks.RandomMutationhillClimbing ,epochs, True)
