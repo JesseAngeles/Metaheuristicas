@@ -1,0 +1,10 @@
+venv
+__pycache__
+Codigo/cec2017
+*.json
+*.aux
+*.log
+*.bbl
+*.blg
+*.toc
+*.gz

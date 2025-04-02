@@ -1,3 +1,4 @@
+import random
 from HillClimbing import HillClimbing
 
 epochs:int = 100
@@ -21,7 +22,18 @@ def objective_function(aditional_information, state):
         
     return -distance
 
-def neighboursFunction(state:list[any], index:int)->list[list[any]]:
+def neighboursFunction(state:list[any], index:int, only_one = False)->list[list[any]]:
+    if only_one:
+        neighbour = state[:]
+        
+        pos = index
+        while pos == index:    
+            pos = random.randrange(len(state))
+        
+        neighbour[pos], neighbour[index] = neighbour[index], neighbour[pos]
+
+        return neighbour
+
     neighbours = []
     for i in range(len(state)):
         if index == i:
@@ -30,8 +42,7 @@ def neighboursFunction(state:list[any], index:int)->list[list[any]]:
         neighbour = state[:]
         neighbour[i], neighbour[index] = neighbour[index], neighbour[i]
         
-        neighbours.append(neighbour)
-        
+        neighbours.append(neighbour)        
     return neighbours
 
 tsp = HillClimbing(state, aditional_information, objective_function, neighboursFunction)

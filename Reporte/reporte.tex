@@ -440,9 +440,7 @@ def HillClimbing(self, method, epochs:int, print: bool):
     next_state = method(current_state)
     if (print):
       self.Print(next_state)
-    if self.objective_function(self.aditional_information, 
-      next_state) == self.objective_function(self.
-      aditional_information, current_state):
+    if self.objective_function(self.aditional_information, next_state) == self.objective_function(self.aditional_information, current_state):
       break
   current_state = next_state
 
@@ -455,10 +453,12 @@ La función \ref{lst:RMHC} tiene un ciclo adicional ya que busca de forma aleato
 
 \begin{lstlisting}[style=pythonstyle, label={lst:SHC} ,caption={Función Hill Climbing}]
 def SimpleHillClimbing(self, current_state):
-  for neighbour in self.neighbours_function(current_state):
-    if self.objective_function(self.aditional_information, neighbour) > self.objective_function(self.aditional_information, current_state):
-    current_state = neighbour
-      break    
+  for i in range(len(current_state)):
+    neighbours = self.neighbour_function(current_state,i)
+    for neighbour in neighbours:
+      if self.objective_function(self.aditional_information, neighbour) > self.objective_function(self.aditional_information, current_state):
+      	current_state = neighbour
+        break    
   return current_state
 \end{lstlisting}
 
@@ -466,10 +466,12 @@ def SimpleHillClimbing(self, current_state):
 def SteepestAscentHillClimbing(self, current_state):
   current_max = current_state
   max = self.objective_function(self.aditional_information, current_state)
-  for neighbour in self.neighbours_function(current_state):
-    if self.objective_function(self.aditional_information, neighbour) > max:
-      max = self.objective_function(self.aditional_information, neighbour)
-      current_max = neighbour
+  for i in range(len(current_state)):
+    neighbours = self.neighbour_function(current_state,i)
+    for neighbour in neighbours:
+      if self.objective_function(self.aditional_information, neighbour) > max:
+        max = self.objective_function(self.aditional_information, neighbour)
+        current_max = neighbour
   return current_max
 \end{lstlisting}
 
@@ -477,24 +479,39 @@ def SteepestAscentHillClimbing(self, current_state):
 def NextAscentHillClimbing(self, current_state)->list[any]:
   current_min = current_state
   min = float('inf')
-  for neighbour in self.neighbours_function(current_state):
-    neighbour_objective_function = self.objective_function(self.aditional_information, neighbour)
-    if (neighbour_objective_function > self.objective_function(self.aditional_information, current_state) and neighbour_objective_function < min):
-      min = neighbour_objective_function
-      current_min = neighbour
+   for i in range(len(current_state)):
+    neighbours = self.neighbour_function(current_state,i)
+    for neighbour in neighbours:
+      neighbour_objective_function = self.objective_function(self.aditional_information, neighbour)
+      if (neighbour_objective_function > self.objective_function(self.aditional_information, current_state) and neighbour_objective_function < min):
+        min = neighbour_objective_function
+        current_min = neighbour
   return current_min
 \end{lstlisting}
 
 \begin{lstlisting}[style=pythonstyle, label={lst:RMHC} ,caption={Función Random-Mutation Hill Climbing}]
 def RandomMutationhillClimbing(self, current_state)->list[any]:       
   for _ in range(self.max_random):
-    new_state = random.choice(self.neighbours_function(current_state))
-
+    random_pos = random.randrange(len(current_state))
+    new_state = self.neighbour_function(current_state, random_pos,True)
+  
     if self.objective_function(self.aditional_information, new_state) > self.objective_function(self.aditional_information, current_state):
       current_state = new_state
     break
   return current_state
 \end{lstlisting}
+
+\subsubsection{Objective Function}
+
+La función objetivo es una variable que depende del problema que se desea resolver. Esta función requiere de un estado a evaluar e información adicional que sirve para realizar la evaluación como: distancias entre puntos, valores de cada elemento del estado, elementos anidados, transformaciones de los datos, etc.
+
+El resultado que retorna es el valor objetivo de dicha configuración. Conforme a lo diseñado, la función \textit{Hill Climbing} unicamente maximiza, por lo que si el objetivo es minimizar sera necesario invertir el signo de salida. 
+
+\subsubsection{Neighbour Function}
+
+La función de vecindad recibe como parámetros el estado actual, el indice que se desea permutar y un valor booleano para obtener unicamente un elemento (Exclusivo para \textit{Random Mutation Hill Climbing}).
+
+Supongamos que el estado actual es un vector de tres dimensiones discreto $x = (a,b,c)$. Los vecinos serán todos aquellos que se pueda acceder mediante algún cambio en el vector (sea una unidad mas y una unidad menos): $\{ (a_{-1},b,c), (a_{+1},b,c), \dots , (a,b,c_{+1}) \}$. Para evitar calcular todos los vecinos, el parámetro del indice indica el elemento del vector del cual se obtendrán los vecinos. Por otro lado, cabe la posibilidad de cada elemento tenga mas de un vecino (como lo es el $a_{+1}$ y $a_{-1}$), por lo que el valor booleano se utiliza cuando unicamente se desea calcular uno de los vecinos.
 
 \clearpage
 \subsubsection{Knapsack problem}
@@ -521,14 +538,11 @@ def objectiveFunction(aditional_information, state):
 Para obtener los vecinos de un un estado se utiliza la función de \cite{lst:knapsackEvaluate}. Esta función itera sobre cada elemento de la configuración y aplica Bit Flit.
 
 \begin{lstlisting}[style=pythonstyle, label={lst:knapsackEvaluate} ,caption={Vecindad de Knapsack problem}]
-def neighboursFunction(state:list[any])->list[list[any]]:
-  neighbours = []
-  for i in range(len(state)):
-    neighbour = state[:]
-    neighbour[i] = not neighbour[i]
-    neighbours.append(neighbour)
+def neighbourFunction(state:list[any], index:int, only_one = False)->list[list[any]]:
+  neighbour = state[:]
+  neighbour[index] = not neighbour[index]
 
-  return neighbours
+  return neighbour if only_one else [neighbour]
 \end{lstlisting}
 
 La información adicional requerida son $n$ pares de valores que almacenan los pesos y los valores respectivamente. El numero en la ultima posición representa el peso máximo de la mochila.
@@ -560,16 +574,24 @@ def objective_function(aditional_information, state):
 La función \ref{lst:travelEvaluate} obtiene la vecindad de un estado. Se consideran como vecindades todas aquellas configuraciones que se pueden alcanzar realizando unicamente un intercambio de elementos.
 
 \begin{lstlisting}[style=pythonstyle, label={lst:travelEvaluate} ,caption={Vecindad de Travel Salesman Problem}]
-def neighboursFunction(state:list[any])->list[list[any]]:
-  neighbours = []
-  for i in range(len(state) - 1):
-    for j in range(len(state)):
-      if i == j:
-        continue
-      neighbour = state[:]
-      neighbour[i], neighbour[j] = neighbour[j], neighbour[i]
-      neighbours.append(neighbour)
+def neighboursFunction(state:list[any], index:int, only_one = False)->list[list[any]]:
+  if only_one:
+    neighbour = state[:]
+    pos = index
+    while pos == index:    
+    pos = random.randrange(len(state))
+    neighbour[pos], neighbour[index] = neighbour[index], neighbour[pos]
+    return neighbour
 
+  neighbours = []
+  for i in range(len(state)):
+    if index == i:
+      continue
+
+    neighbour = state[:]
+    neighbour[i], neighbour[index] = neighbour[index], neighbour[i]
+
+    neighbours.append(neighbour)        
 return neighbours
 \end{lstlisting}
 
@@ -599,23 +621,22 @@ def objectiveFunction(aditional_information, state):
 La función para obtener los vecinos \ref{lst:funsumEvaluate} considera como vecinos todas aquellas configuraciones que pueden ser alcanzadas aumentando o disminuyendo en una unidad un parámetro (Siempre que es en el rango).
 
 \begin{lstlisting}[style=pythonstyle, label={lst:funsumEvaluate} ,caption={Vecinos de Función de suma}]
-def neighboursFunction(state:list[any])->list[list[any]]:
-  neighbours = []
-  for i in range(len(state)):
-    neighbour1 = state[:]
-    neighbour2 = state[:]
-    neighbour1[i] = neighbour1[i] - 1
-    if neighbour1[i] < -10:
-      neighbour1[i] = 10 
+def neighboursFunction(state:list[any], index:int, only_one = False)->list[list[any]]:
+  sign = random.choice({-1,1})
+  neighbour1 = state[:]
+  neighbour1[index] -= 1 * sign
+  if neighbour1[index] < -10:
+    neighbour1[index] = 10 
 
-    neighbour2[i] = neighbour2[i] + 1
-    if neighbour2[i] > 10:
-      neighbour2[i] = -10 
+  if only_one:
+    return neighbour1 * sign
 
-    neighbours.append(neighbour1)
-    neighbours.append(neighbour2)
+  neighbour2 = state[:]
+  neighbour2[index] += 1
+  if neighbour2[index] > 10:
+    neighbour2[index] = -10 
 
-  return neighbours
+  return [neighbour1,neighbour2]
 \end{lstlisting}
 
 Este problema no requiere información adicional, así que unicamente es necesario definir la configuración inicial.
@@ -750,14 +771,19 @@ def objectiveFunction(aditional_information, state):
 Por otro lado, el código \ref{lst:cec_nei} muestra la función para obtener a los vecinos. Dado que las funciones existen en un espacio de valores reales, se opta por avanzar una cantidad aleatoria en cualquier dirección.
 
 \begin{lstlisting}[style=pythonstyle, label={lst:cec_nei} ,caption={Función de vecindad}]
-def neighboursFunction(state):
-  neighbours = []
-  for i in range(len(state)):
-    noise = np.random.normal()
-    neighbour = state.copy()
-    neighbour[i] += noise
-    neighbours.append(neighbour)
-  return neighbours
+def neighboursFunction(state, index: int, only_one = False):
+  noise = np.random.normal()
+  neighbour1 = state[:]
+
+  neighbour1[index] -= noise
+
+  if only_one:
+    return neighbour1
+
+  neighbour2 = state[:]
+  neighbour2[index] += noise
+
+  return [neighbour1, neighbour2]
 \end{lstlisting}
 
 Para realizar diferentes pruebas, se utilizan los códigos \ref{lst:run} y \ref{lst:par}. 

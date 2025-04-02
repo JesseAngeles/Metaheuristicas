@@ -45,7 +45,7 @@ class HillClimbing:
     def RandomMutationhillClimbing(self, current_state)->list[any]:       
         for _ in range(self.max_random):
             random_pos = random.randrange(len(current_state))
-            new_state = random.choice(self.neighbour_function(current_state, random_pos))
+            new_state = self.neighbour_function(current_state, random_pos,True)
 
             if self.objective_function(self.aditional_information, new_state) > self.objective_function(self.aditional_information, current_state):
                 current_state = new_state

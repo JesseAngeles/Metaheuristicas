@@ -1,3 +1,4 @@
+import random
 from HillClimbing import HillClimbing
 
 epochs:int = 100
@@ -12,16 +13,20 @@ def objectiveFunction(aditional_information, state):
    
     return -total_sum
 
-def neighboursFunction(state:list[any], index:int)->list[list[any]]:
+def neighboursFunction(state:list[any], index:int, only_one = False)->list[list[any]]:
+    sign = random.choice({-1,1})
     neighbour1 = state[:]
-    neighbour2 = state[:]
-    
-    neighbour1[index] -= 1
-    neighbour2[index] += 1
+
+    neighbour1[index] -= 1 * sign
     
     if neighbour1[index] < -10:
         neighbour1[index] = 10 
-        
+    
+    if only_one:
+        return neighbour1
+    
+    neighbour2 = state[:]
+    neighbour2[index] += 1 * sign
     if neighbour2[index] > 10:
         neighbour2[index] = -10 
 

@@ -19,11 +19,12 @@ def objectiveFunction(aditional_information, state):
 
     return value
 
-def neighbourFunction(state:list[any], index:int)->list[list[any]]:
+def neighbourFunction(state:list[any], index:int, only_one = False)->list[list[any]]:
     neighbour = state[:]
     neighbour[index] = not neighbour[index]
-    
-    return [neighbour]
+
+    return neighbour if only_one else [neighbour]
+
 
 ks = HillClimbing(state, aditional_information, objectiveFunction, neighbourFunction)
 

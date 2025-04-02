@@ -12,12 +12,16 @@ def objectiveFunction(aditional_information, state):
 
 
 # Función de vecindad
-def neighboursFunction(state, index: int):
+def neighboursFunction(state, index: int, only_one = False):
     noise = np.random.normal()
     neighbour1 = state[:]
-    neighbour2 = state[:]
     
     neighbour1[index] -= noise
+    
+    if only_one:
+        return neighbour1
+    
+    neighbour2 = state[:]
     neighbour2[index] += noise
     
     return [neighbour1, neighbour2]
