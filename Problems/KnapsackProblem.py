@@ -23,10 +23,8 @@ class KnapsackProblem:
         return total_value
         
     def generate_initial_solution(self, information):
-        while True:
-            solution = [random.randint(0,1) for _ in information['values']]
-            if self.energy(solution, information) > 0:
-                return solution
+        solution = [random.randint(0,1) for _ in information['values']]
+        return solution
 
     def random_neighbour(self, solution):
         neighbour = solution[:]
