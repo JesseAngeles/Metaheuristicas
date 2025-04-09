@@ -7,6 +7,7 @@ from UI.components import draw_cities, back_to_root
 def travel_salesman_problem_window(root):
     problem = TravelSalesmanProblem()
     root.withdraw()
+    distances = []
 
     speed = 1000
 
@@ -35,9 +36,12 @@ def travel_salesman_problem_window(root):
     frame_footer.pack(pady=5)
     
     def generate_information():
+        nonlocal distances
         total_cities = int(entry_total_items.get())
         problem.generate_information(total_cities)
-        
+            
+        distances = problem.information['distances']
+            
         draw_cities(
             frame_items,
             problem.information['distances'],
@@ -118,6 +122,41 @@ def travel_salesman_problem_window(root):
             speed /= 2
         else:
             speed *= 2
+
+    def getDistances():
+        # Crear una ventana para mostrar las distancias
+        distance_window = tk.Toplevel(window_a)
+        distance_window.title("Distance matrix")
+
+        # Crear un widget Text con un scrollbar
+        text_widget = tk.Text(distance_window, height=20, width=80)
+        text_widget.pack(side="left", fill="both", expand=True)
+
+        scrollbar = tk.Scrollbar(distance_window, orient="vertical", command=text_widget.yview)
+        scrollbar.pack(side="right", fill="y")
+
+        text_widget.config(yscrollcommand=scrollbar.set)
+
+        # Crear el mensaje con la matriz de distancias
+        message = "D | "
+        for i in range(len(distances)):
+            message += f"{i}\t"
+        
+        message += "\n"
+        
+        for i in range(len(distances)):
+            message += "-------"
+        
+        for i in range(len(distances)):
+            message += f"\n{i} |"
+            for distance in distances[i]:
+                message += f"{str(distance)}\t"
+        
+        text_widget.insert(tk.END, message)
+
+        text_widget.config(state=tk.DISABLED)
+
+        distance_window.mainloop()
         
     button_frame = tk.Frame(window_a)
     button_frame.pack(pady=5) 
@@ -129,5 +168,6 @@ def travel_salesman_problem_window(root):
     speed_frame.pack(pady=5)
     tk.Button(speed_frame, text="Fast", command=lambda: change_speed(True)).pack(side="left", padx = 10)
     tk.Button(speed_frame, text="Low", command=lambda: change_speed(False)).pack(side="left", padx = 10)
+    tk.Button(speed_frame, text="Distances", command=lambda: getDistances()).pack(side="left", padx= 10)
     
-    tk.Button(window_a, text="Volver", command=lambda: back_to_root(window_a, root)).pack(pady=5)
+    tk.Button(window_a, text="Menu", command=lambda: back_to_root(window_a, root)).pack(pady=5)

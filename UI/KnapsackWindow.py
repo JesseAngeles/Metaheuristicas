@@ -141,4 +141,4 @@ def knapsack_problem_window(root):
     tk.Button(speed_frame, text="Fast", command=lambda: change_speed(True)).pack(side="left", padx = 10)
     tk.Button(speed_frame, text="Low", command=lambda: change_speed(False)).pack(side="left", padx = 10)
     
-    tk.Button(window_a, text="Volver", command=lambda: back_to_root(window_a, root)).pack(pady=5)
+    tk.Button(window_a, text="Menu", command=lambda: back_to_root(window_a, root)).pack(pady=5)

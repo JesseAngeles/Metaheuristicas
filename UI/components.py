@@ -59,3 +59,26 @@ def draw_cities(frame_items, items, boxes, labels_value):
 
         boxes.append(city)  # ID del círculo
         labels_value.append((text, x, y))  # Guardamos también la posición
+
+def draw_bars(frame_items, size, boxes, labels_value):
+    for widget in frame_items.winfo_children():
+        widget.destroy()
+    
+    boxes.clear()
+    labels_value.clear()
+    
+    canvas = tk.Canvas(frame_items, width=50 * size, height=500, bg="white")
+    canvas.pack()
+    
+    frame_items.canvas = canvas  # Guardamos el canvas para acceder luego
+    
+    for i in range(size):
+        x = i * 50 + 25
+        y_bottom = 270  # espacio para evitar solaparse con los labels
+        y_top = y_bottom - 10  # altura inicial mínima
+
+        bar = canvas.create_rectangle(x - 5, y_top, x + 5, y_bottom, fill="black")
+        text = canvas.create_text(x, y_top - 10, text="V: 0", font=("Arial", 10))
+
+        boxes.append(bar)
+        labels_value.append(text)
