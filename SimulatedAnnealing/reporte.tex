@@ -476,6 +476,15 @@ def random_neighbour(self, solution):
   return neighbour     
 \end{lstlisting}
 	
+	La interfaz de la figura \ref{fig:kp} simula 125 elementos generados de forma aleatorio para ser metidos en una mochila 200 de capacidad. En verde son los objetos que están en la prueba actual de la mochila y en gris los que no. Adicionalmente se utiliza un cuadrado verde para validar que el peso actual sea menor que la capacidad máxima de la mochila.
+	
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=\linewidth]{img/kp}
+		\caption{Knapsack Problem Interface}
+		\label{fig:kp}
+	\end{figure}
+	
 	
 	\subsubsection{Travel Salesman Problem}
 
@@ -535,6 +544,15 @@ def random_neighbour(self, solution):
 return neighbour
 \end{lstlisting}
 
+La interfaz de la figura \ref{fig:tsp} simula 25 ciudades y muestra la exploración de diferentes posibilidades en el espacio de búsqueda. El botón de \textit{distances} muestra la matriz de adyacencia del grafo.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\linewidth]{img/tsp}
+	\caption{Travel Salesman Problem Interface}
+	\label{fig:tsp}
+\end{figure}
+
 	\subsubsection{Minimizar la función}
 
 La función \ref{lst:sfp-gi} unicamente define el tamaño del vector y los rangos de valores. por otro lado, la función \ref{lst:sfp-e} calcula la energía del sistema dada por la suma de los cuadrados, dado que es una función de minimización se invierte el signo.
@@ -582,12 +600,29 @@ def random_neighbour(self, solution):
   return neighbour
 \end{lstlisting}
 
+La interfaz de la figura \ref{fig:sfp} simula un vector de 30 elementos en el rango de -10 a 10. Las barras crecen y decrecen según se explore el espacio de búsqueda. 
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\linewidth]{img/sfp}
+	\caption{Sum Function Problem Interface}
+	\label{fig:sfp}
+\end{figure}
+
+\clearpage
+\section{Conclusión}
+
+\textit{Simulated Annealing} tiene muchas mas posibilidades de encontrar un óptimo global pero, de forma redundante se encuentra a su propio problema de optimización el cual consiste en definir los meta parámetros del algoritmo, como la temperatura máxima, mínima, tasa de decrecimiento, etc. Podria resultar interesante aplicar Simulated Annealing para si mismo y analizar la influencia de dichos meta parámetros.
+
+Otro problema es la precisión al momento de encontrar una mejor solución, pues aunque el algoritmo no se haya estancado en alguna posición, si se detiene cuando la temperatura ha superado el umbral establecido.
+
+La implementación de un almacenamiento de los mejores resultados permite registrar si en algún punto se desvío del camino, esto ayudaría a reiniciar el algoritmo pero colocando esa posición como la solución inicial, o incluso, si sabemos que el resultado es próximo, podría optarse por otros métodos como \textit{hill Climbing}, para encontrar una solución mas precisa.
+
+
 	% Referencias
 	\clearpage
 	\addcontentsline{toc}{section}{Referencias}
 	\bibliographystyle{IEEEtran}
 	\bibliography{referencias}
-	
-
 
 \end{document}
