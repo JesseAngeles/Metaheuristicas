@@ -4,7 +4,7 @@ import json
 from HillClimbing import HillClimbing
 from concurrent.futures import ProcessPoolExecutor
 from functools import partial
-from cec2017.cec2017.simple import *
+from Problems.cec2017.cec2017.simple import *
 
 # Función objetivo
 def objectiveFunction(aditional_information, state):

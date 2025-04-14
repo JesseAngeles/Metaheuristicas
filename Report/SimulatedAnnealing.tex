@@ -610,13 +610,262 @@ La interfaz de la figura \ref{fig:sfp} simula un vector de 30 elementos en el ra
 \end{figure}
 
 \clearpage
+\section{Problemas de optimización CEC 2017}
+
+En el documento \cite{cec} se presentan una serie de problemas sobre optimización numérica de parámetros reales. En este reporte se analizan las 10 primeras funciones que cumplen con la siguiente definición:
+\begin{itemize}
+	\item Todas las funciones son problemas de minimización definidos de la siguiente manera:
+	\[ min f(x), \; x = [x_1, x_2, \dots, x_D]^T \]
+	Donde:
+	\begin{itemize}
+		\item $x$ es el vector de variables de dimensión $D$ que representa la solución del problema.
+		\item $D$ es el numero de dimensiones del problema.
+	\end{itemize}
+	
+	\item El óptimo global (la mejor solución) se encuentra desplazada del origen para evitar respuestas que asumen que la respuesta esta cerca del origen:
+	\[ o = [ o_1, o_2, \dots, o_D ]^T \]
+	Donde $o$ es el vector del optimo global desplazado.
+	
+	El valor óptimo se distribuye de manera aleatoria en el rango de $o \in [-80, 80]^D$
+	
+	\item Las funciones son escalables, es decir, el numero de dimensiones $D$ puede variar.
+	
+	\item El rango de búsqueda de todas las funciones para las variables se delimita por $x \in [-100, 100]^D$
+	
+	\item Implementación de matrices de rotación: Las variables interactúan entre ellas para volver el problema más difícil.
+	
+	\item Para simular problemas reales, las variables se dividen de manera aleatoria en subcomponentes. Cada subcomponente tiene su propia matriz de rotación.
+	
+\end{itemize}
+
+\subsection{Funciones}
+
+A continuación se definen las 10 primeras funciones.
+
+\subsubsection*{1) Bent Cigar Function}
+\[
+f(x) = x_1^2 + 10^6 \sum_{i=2}^{D} x_i^2
+\]
+
+\subsubsection*{2) Zakharov Function}
+\[
+f(x) = \sum_{i=1}^{D} x_i^2 + \left( 0.5 \sum_{i=1}^{D} i x_i \right)^2 + \left( 0.5 \sum_{i=1}^{D} i x_i \right)^4
+\]
+
+\subsubsection*{3) Rosenbrock's Function}
+\[
+f(x) = \sum_{i=1}^{D-1} \left[ 100 (x_{i+1} - x_i^2)^2 + (x_i - 1)^2 \right]
+\]
+
+\subsubsection*{4) Rastrigin's Function}
+\[
+f(x) = \sum_{i=1}^{D} \left[ x_i^2 - 10 \cos(2 \pi x_i) + 10 \right]
+\]
+
+\subsubsection*{5) Expanded Schaffer's F6 Function}
+\[
+g(x, y) = 0.5 + \frac{\sin^2(\sqrt{x^2 + y^2}) - 0.5}{(1 + 0.001(x^2 + y^2))^2}
+\]
+
+\[
+f(x) = \sum_{i=1}^{D-1} g(x_i, x_{i+1})
+\]
+
+\subsubsection*{6) Lunacek Bi-Rastrigin Function}
+\[
+f(x) = \min \left( \sum_{i=1}^{D} (x_i - \mu_0)^2, dD + s \sum_{i=1}^{D} (x_i - \mu_1)^2 \right) 
++ 10 \sum_{i=1}^{D} \left[ 1 - \cos(2 \pi z_i) \right]
+\]
+
+\[
+\mu_0 = 2.5, \quad \mu_1 = -\sqrt{\frac{\mu_0^2}{d}}
+\]
+
+\subsubsection*{7) Non-Continuous Rotated Rastrigin's Function}
+\[
+f(x) = \sum_{i=1}^{D} \left[ z_i^2 - 10\cos(2\pi z_i) + 10 \right]
+\]
+
+\[
+z_i = \text{Tosz}(\text{Tasy}(x_i))
+\]
+
+\subsubsection*{8) Levy Function}
+\[
+f(x) = \sin^2(\pi w_1) + \sum_{i=1}^{D-1} (w_i - 1)^2 \left[ 1 + 10\sin^2(\pi w_i + 1) \right] + (w_D - 1)^2 \left[ 1 + \sin^2(2\pi w_D) \right]
+\]
+
+\[
+w_i = 1 + \frac{x_i - 1}{4}
+\]
+
+\subsubsection*{9) Modified Schwefel's Function}
+\[
+f(x) = 418.9829 D - \sum_{i=1}^{D} x_i \sin(\sqrt{|x_i|})
+\]
+
+\subsubsection*{10) High Conditioned Elliptic Function}
+\[
+f(x) = \sum_{i=1}^{D} 10^{6 \frac{i-1}{D-1}} x_i^2
+\]
+
+Cuyas graficas se observan en la figura \ref{fig:cec}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{img/cec}
+	\caption{Superficies ploteadas de las 10 primeras funciones para dos dimensiones \cite{plot}}
+	\label{fig:cec}
+\end{figure}
+
+\subsection{Código}
+
+Para los problemas del CEC 2017, se utilizaron las funciones de Duncan Tilley en Python en el repositorio \textit{cec2017-py} \cite{git}.
+
+Para el algoritmo de \textit{Simulated Annealing} se usa el mismo código que para los problemas anteriores, por lo que unicamente es necesario diseñar la función de generación de información, energía, generador de soluciones iniciales  y la función para obtener un vecino aleatorio.
+
+La función que genera la información del código \ref{lst:cec_info} define el rango de valores, la función a utilizar de los problemas, la dimensión de la solución y un $alpha$ que determina la distribución de probabilidad dado que el espacio es continuo.
+
+\begin{lstlisting}[style=pythonstyle, label={lst:cec_info} ,caption={Función \textit{generate\_information}}]
+def generate_information(self, function, low, high, dimention, alpha = 1):
+  self.information = {
+	"low" : low,
+	"hight": high,
+	"dimention": dimention,
+	"function": function,
+	"alpha": alpha
+  }
+\end{lstlisting}
+
+La función de energía se  por el propio problema de optimización la cual recibe como parámetros el vector del estado actual (código \ref{lst:cec_objs}).
+
+\begin{lstlisting}[style=pythonstyle, label={lst:cec_objs} ,caption={Función \textit{energy}}]
+def energy(self, solution, information):
+  return - self.information["function"]([solution])[0]
+\end{lstlisting}
+
+La función \ref{lst:cec_init} se  por el propio problema de optimización la cual recibe como parámetros el vector del estado actual (código \ref{lst:cec_objs}).
+
+\begin{lstlisting}[style=pythonstyle, label={lst:cec_init} ,caption={Función \textit{generate\_initial\_solution}}]
+def generate_initial_solution(self, information):
+  solution = np.random.uniform(
+  	low=self.information["low"],
+  	high=self.information["hight"],
+  	size=self.information["dimention"]).tolist()
+
+  return solution
+\end{lstlisting}
+
+Por otro lado, el código \ref{lst:cec_nei} muestra la función para obtener a un vecino de forma aleatoria. Dado que las funciones existen en un espacio de valores reales, se opta por avanzar una cantidad aleatoria en cualquier dirección.
+
+\begin{lstlisting}[style=pythonstyle, label={lst:cec_nei} ,caption={Función \textit{random\_neighbour}}]
+def random_neighbour(self, solution):
+  neighbour = solution[:]
+  index = random.randint(0, len(solution) - 1)
+  alpha = random.uniform(-self.information["alpha"], self.information["alpha"])
+
+  neighbour[index] += alpha
+  return neighbour
+\end{lstlisting}
+
+El código \ref{lst:run} itera sobre sobre las 10 funciones, genera la información con una solución de 100 dimensiones y genera 20 datos por función.
+
+\begin{lstlisting}[style=pythonstyle, label={lst:run} ,caption={Gneración de datos}]
+for function in functions:
+  cec_problem = Cec2017()
+  dimension = 5
+  cec_problem.generate_information(function, -100, 100, 100, dimension)
+
+  sa = SimulatedAnnealing(cec_problem.information, 
+  cec_problem.energy, 
+  cec_problem.generate_initial_solution, 
+  cec_problem.random_neighbour)
+
+  for i in range(20):
+    sa.reset()
+
+    start_time = time.time()
+	while sa.temperature > sa.min_temperature:
+	  sa.stepSimpleSimulatedAnnealing()
+	elapsed_time = time.time() - start_time
+
+	record = {
+	  "function": function.__name__,
+	  "energy": sa.energy,
+	  "time_seconds": elapsed_time,
+	  "dimension": dimension
+	}
+
+	dataset.append(record)
+\end{lstlisting}
+
+\subsection{Resultados}
+
+Considerando vectores de tamaño 100, una temperatura inicial de 1000, una temperatura mínima de 1,  100 iteraciones (dentro de \textit{Simulated Annealing})y   20 iteraciones sobre cada función. Se obtuvieron los resultado de la tabla \ref{tab:energy} y la tabla \ref{tab:tiempo}.
+
+Adicionalmente,  la clase \textit{Simulated Annealing} siempre busca maximizar el resultado, por lo que para búsqueda de mínimos locales, se tiene que cambiar el signo en la función objetivo, por lo que los resultados obtenidos en la tabla \ref{tab:energy} tienen signo negativo.
+
+La tabla \ref{tab:tiempo} por su parte, muestra las estadísticas obtenidas pero del tiempo de ejecución en segundos. 
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|p{2.1cm}|}  
+		\hline
+		\textbf{f(x)} & \textbf{Peor} & \textbf{Mejor} & \textbf{Promedio} & \textbf{Mediana} & \textbf{Desviación estándar} \\  
+		\hline
+		f1  & -1.2460e+10 & -2.4494e+04 & -6.2340e+08 & -4.9583e+04 & 2.7861e+09 \\
+		f2  & -2.6553e+97  & -1.1543e+10  & -1.3276e+96  & -3.7496e+14  & 5.9373e+96 \\
+		f3  & -1.0030e+06  & -8.5706e+05  & -9.1060e+05  & -9.0083e+05  & 4.3764e+04 \\
+		f4  & -1025.97     & -568.33     & -655.39     & -617.40     & 106.62 \\
+		f5  & -2755.05     & -1976.85    & -2464.06    & -2579.62    & 274.80 \\
+		f6  & -905.67      & -768.02     & -830.47     & -831.76     & 43.01 \\
+		f7  & -9114.76     & -3071.32    & -4114.49    & -3701.26    & 1358.74 \\
+		f8  & -3125.81     & -2326.66    & -2670.50    & -2676.52    & 259.03 \\
+		f9  & -71191.06    & -65976.84   & -68020.84   & -68168.09   & 1238.82 \\
+		f10 & -17334.65    & -12570.57   & -14615.18   & -14440.98   & 1404.16 \\
+		\hline
+	\end{tabular}
+	\caption{Estadísticas de energía por función.}
+	\label{tab:energy}
+\end{table}
+
+
+
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|p{2.1cm}|}  
+		\hline
+		\textbf{f(x)} & \textbf{Peor} & \textbf{Mejor} & \textbf{Promedio} & \textbf{Mediana} & \textbf{Desviación estándar} \\  
+		\hline
+		f1  & 0.5162 & 0.4168 & 0.4609 & 0.4649 & 0.0266 \\
+		f2  & 0.5118 & 0.4309 & 0.4777 & 0.4790 & 0.0250 \\
+		f3  & 0.5805 & 0.4552 & 0.5201 & 0.5231 & 0.0295 \\
+		f4  & 0.5738 & 0.4678 & 0.5154 & 0.5051 & 0.0337 \\
+		f5  & 0.5311 & 0.4374 & 0.4921 & 0.4915 & 0.0256 \\
+		f6  & 0.5812 & 0.4854 & 0.5318 & 0.5296 & 0.0290 \\
+		f7  & 0.7874 & 0.6239 & 0.6861 & 0.6834 & 0.0465 \\
+		f8  & 0.6256 & 0.4952 & 0.5541 & 0.5497 & 0.0320 \\
+		f9  & 0.6721 & 0.5378 & 0.5995 & 0.5967 & 0.0425 \\
+		f10 & 0.7984 & 0.6259 & 0.6938 & 0.6884 & 0.0468 \\
+		\hline
+	\end{tabular}
+	\caption{Estadísticas de tiempo de ejecución por función.}
+	\label{tab:tiempo}
+\end{table}
+
+\clearpage
 \section{Conclusión}
 
-\textit{Simulated Annealing} tiene muchas mas posibilidades de encontrar un óptimo global pero, de forma redundante se encuentra a su propio problema de optimización el cual consiste en definir los meta parámetros del algoritmo, como la temperatura máxima, mínima, tasa de decrecimiento, etc. Podria resultar interesante aplicar Simulated Annealing para si mismo y analizar la influencia de dichos meta parámetros.
+\textit{Simulated Annealing} tiene muchas mas posibilidades de encontrar un óptimo global pero, de forma redundante se encuentra a su propio problema de optimización el cual consiste en definir los meta parámetros del algoritmo, como la temperatura máxima, mínima, tasa de decrecimiento, etc. Podria resultar interesante aplicar \textit{Simulated Annealing} para si mismo y analizar la influencia de dichos meta parámetros.
 
 Otro problema es la precisión al momento de encontrar una mejor solución, pues aunque el algoritmo no se haya estancado en alguna posición, si se detiene cuando la temperatura ha superado el umbral establecido.
 
 La implementación de un almacenamiento de los mejores resultados permite registrar si en algún punto se desvío del camino, esto ayudaría a reiniciar el algoritmo pero colocando esa posición como la solución inicial, o incluso, si sabemos que el resultado es próximo, podría optarse por otros métodos como \textit{hill Climbing}, para encontrar una solución mas precisa.
+
+Respecto a los resultados obtenidos mediante \textit{Random Mutation Hill Climbing} a los problemas del Cec 2017, los peores valores fueron incluso mejores, lo que indica que, aunque \textit{Hill Climbing} puede obtener valores con mayor precisión de forma local, le es mas difícil conseguir un mejor resultado dado que no puede escapar de los óptimos locales. 
+
+Como próximas  pruebas se plantea la posibilidad de utilizar las mismas semillas para ambos algoritmos y conocer el comportamiento de ambos dadas las condiciones iniciales. Ademas, se propone utilizar el algoritmo de \textit{Simulated Annealing} sobre si mismo para calcular los mejores parámetros iniciales que puedan reducir el numero de operaciones realizadas. Finalmente, se propone la mezcla de ambos, utilizando primero \textit{Simulated Annealing} para encontrar el óptimo global (o intentar encontrarlo) y utilizar \textit{Hill Climbing} para aumentar la precisión de la solución obtenida.
 
 
 	% Referencias
