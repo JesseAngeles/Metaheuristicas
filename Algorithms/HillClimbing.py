@@ -1,13 +1,34 @@
-import random
+from Algorithms.Metaheuristic import Metaheuristic 
 
-class HillClimbing:
-    def __init__(self, state, aditional_information, objective_function, neighbour_function, max_random = 30):
-        self.state = state
-        self.aditional_information = aditional_information
-        self.objective_function = objective_function
-        self.neighbour_function = neighbour_function
-        self.max_random = max_random
+class HillClimbing(Metaheuristic):
+    def __init__(self, problem, max_random:int = 30):
+        super().__init__(problem)
+        self.max_random: int = max_random
 
+    # Abstract methods
+    def resetProblem(self):
+        return super().resetProblem()
+    
+    def optimize(self, epochs: int = 1):
+        if not self.is_best:
+            for _ in range(epochs):
+                next_solution = self.method(self.solution)
+                if self.isSameSolution(next_solution, self.solution):
+                    self.is_best = True
+                    break
+                self.solution = next_solution
+                
+    # Class methods
+    def randomMutation(self, current_solution: any) -> list:
+        for _ in range(self.max_random):
+            new_solution = self.problem.getRandomNeighbour(current_solution)
+            if self.isBetterSolution(new_solution, current_solution):
+                current_solution = new_solution
+                break
+
+        return current_solution
+    
+"""
     def SimpleHillClimbing(self, current_state)->list[any]:
         for i in range(len(current_state)):
             neighbours = self.neighbour_function(current_state, i)
@@ -41,38 +62,4 @@ class HillClimbing:
                     min = neighbour_objective_function
                     current_min = neighbour
         return current_min
-        
-    def RandomMutationhillClimbing(self, current_state)->list[any]:       
-        for _ in range(self.max_random):
-            random_pos = random.randrange(len(current_state))
-            new_state = self.neighbour_function(current_state, random_pos,True)
-
-            if self.objective_function(self.aditional_information, new_state) > self.objective_function(self.aditional_information, current_state):
-                current_state = new_state
-                break
-        return current_state
-        
-    def HillClimbing(self, method, epochs:int, is_print: int):
-        current_state = self.state
-        for i in range(epochs):
-            next_state = method(current_state)
-
-            if is_print == 1:
-                self.Print(next_state)
-            elif is_print == 2:
-                self.PrintObjective(next_state)
-
-            if self.objective_function(self.aditional_information, next_state) == self.objective_function(self.aditional_information, current_state):
-                if is_print:
-                    print(f"No improve in {i}")
-                break
-            current_state = next_state
-        
-        self.state = current_state
-    
-    def PrintObjective(self, state):
-        print(f"objective: {self.objective_function(self.aditional_information, state)}")
-
-
-    def Print(self, state):
-        print(f"state: {state}: {self.objective_function(self.aditional_information, state)}")
+"""

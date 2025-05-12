@@ -1,33 +1,49 @@
 import random
 
-class KnapsackProblem:
-    def __init__(self):
-        self.information = {}
+from Problems.Problem import Problem
 
-    def generate_information(self, items, capacity):
+class KnapsackProblem(Problem):
+    def __init__(self, items: int, capacity: int):
+        super().__init__()
+        self.generateInformation(items, capacity)
+
+    def generateInformation(self, items: int, capacity: int):
         self.information = {
             "items": items,
-            "values": [(random.randint(1,10), random.randint(1, 10)) for _ in range(items)],
+            "values": [(random.randint(1, 10), random.randint(1, 10)) for _ in range(items)],
             "capacity": capacity
         }
 
-    def energy(self, solution, information):
+    def objective(self, solution):
         total_weight = total_value = 0
-        for i in range(len(solution)):
-            if solution[i] == 1:
-                total_weight += information['values'][i][0]
-                total_value += information['values'][i][1]
-        
-        if total_weight > information['capacity']:
-            return information['capacity'] - total_weight
+        for i, selected in enumerate(solution):
+            if selected:
+                total_weight += self.information["values"][i][0]
+                total_value += self.information["values"][i][1]
+        if total_weight > self.information["capacity"]:
+            return self.information["capacity"] - total_weight  # Penalización
         return total_value
-        
-    def generate_initial_solution(self, information):
-        solution = [random.randint(0,1) for _ in information['values']]
-        return solution
 
-    def random_neighbour(self, solution):
+    def generateInitialSolution(self):
+        return [random.randint(0, 1) for _ in self.information['values']]
+        
+    def getRandomNeighbour(self, solution):
         neighbour = solution[:]
         index = random.randint(0, len(solution) - 1)
-        neighbour[index] = 1 - neighbour[index]
-        return neighbour        
+        neighbour[index] = 1 - int(neighbour[index])
+        return neighbour
+
+    def getNextNeighbour(self, solution, *args, **kwargs):
+        return super().getNextNeighbour(solution, *args, **kwargs)
+    
+    def getNeighbours(self, solution):
+        return super().getNeighbours(solution)
+    
+    def printInformation(self):
+        print("--INFORMATION---")
+        print(f"Total items: {self.information.get('items')}")
+        print(f"Capacity: {self.information.get('capacity')}")
+        print("W\tV")
+        for _, (peso, valor) in enumerate(self.information.get("values", [])):
+            print(f"{peso}\t{valor}")
+        print("----------------")

@@ -1,34 +1,51 @@
 import random
 import numpy as np
 
-class Cec2017():
+from Problems.Problem import Problem
 
-    def __init__(self):
-        self.information = {}
+class KnapsackProblem(Problem):
+    def __init__(self, function: callable, low:int , high:int , dimention:int , alpha:int = 1):
+        super().__init__()
+        self.generateInformation(function, low, high, dimention, alpha)
 
-    def generate_information(self, function, low, high, dimention, alpha = 1):
+    def generateInformation(self, function: callable, low:int, high:int, dimention:int, alpha:int):
         self.information = {
-            "low" : low,
-            "hight": high,
-            "dimention": dimention,
             "function": function,
+            "low" : low,
+            "high": high,
+            "dimention": dimention,
             "alpha": alpha
         }
 
-    def energy(self, solution, information):
+    def objective(self, solution):
         return - self.information["function"]([solution])[0]
 
-    def generate_initial_solution(self, information):
+    def generateInitialSolution(self):
         solution = np.random.uniform(low=self.information["low"],
                                      high=self.information["hight"],
                                      size=self.information["dimention"]).tolist()
 
         return solution
 
-    def random_neighbour(self, solution):
+    def getRandomNeighbour(self, solution):
         neighbour = solution[:]
         index = random.randint(0, len(solution) - 1)
         alpha = random.uniform(-self.information["alpha"], self.information["alpha"])
 
         neighbour[index] += alpha
         return neighbour
+
+    def getNextNeighbour(self, solution, *args, **kwargs):
+        return super().getNextNeighbour(solution, *args, **kwargs)
+    
+    def getNeighbours(self, solution):
+        return super().getNeighbours(solution)
+    
+    def printInformation(self):
+        print("-- INFORMATION --")
+        print(f"Function: {self.information.get('function').__name__}")
+        print(f"Lower bound: {self.information.get('low')}")
+        print(f"Upper bound: {self.information.get('high')}")
+        print(f"Dimension: {self.information.get('dimention')}")
+        print(f"Alpha: {self.information.get('alpha')}")
+        print("------------------")

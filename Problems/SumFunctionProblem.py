@@ -1,17 +1,20 @@
 import random
 
-class SumFunctionProblem:
-    def __init__(self):
-        self.information = {}
+from Problems.Problem import Problem
 
-    def generate_information(self, size, min, max):
+class SumFunctionProblem(Problem):
+    def __init__(self, size: int, min: int, max:int):
+        super().__init__()
+        self.generateInformation(size, min, max)
+
+    def generateInformation(self, size: int, min: int, max: int):
         self.information = {
             "size": size,
             "min": min,
             "max": max
         }
-        
-    def energy(self, solution, _):
+
+    def objective(self, solution):
         total_sum:float = 0
         
         for val in solution:
@@ -19,11 +22,11 @@ class SumFunctionProblem:
     
         return -total_sum
 
-    def generate_initial_solution(self, information):
-        solution = [random.randint(information['min'], information['max']) for _ in range(information['size'])]
+    def generateInitialSolution(self):
+        solution = [random.randint(self.information['min'], self.information['max']) for _ in range(self.information['size'])]
         return solution
-
-    def random_neighbour(self, solution):
+        
+    def getRandomNeighbour(self, solution):
         neighbour = solution[:]
         index = random.randint(0, len(solution) - 1)
         sign = random.choice([-1 , 1])
@@ -36,3 +39,16 @@ class SumFunctionProblem:
             neighbour[index] = self.information['max']
 
         return neighbour
+
+    def getNextNeighbour(self, solution, *args, **kwargs):
+        return super().getNextNeighbour(solution, *args, **kwargs)
+    
+    def getNeighbours(self, solution):
+        return super().getNeighbours(solution)
+    
+    def printInformation(self):
+        print("-- INFORMATION --")
+        print(f"Size: {self.information.get('size')}")
+        print(f"Min: {self.information.get('min')}")
+        print(f"Max: {self.information.get('max')}")
+        print("------------------")
