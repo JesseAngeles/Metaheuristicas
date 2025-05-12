@@ -1,29 +1,44 @@
 from Algorithms.HillClimbing import HillClimbing
 from Algorithms.SimulatedAnnealing import SimulatedAnnealing
+from Algorithms.GeneticAlgorithm import GeneticAlgorithm
 
 from Problems.KnapsackProblem import KnapsackProblem
 from Problems.TravelSalesmanProblem import TravelSalesManProblem
 from Problems.SumFunctionProblem import SumFunctionProblem
 from Problems.Cec2017 import Cec2017
-import Problems.cec2017.cec2017.functions as functions
+# import Problems.cec2017.cec2017.functions as functions
 
 ksp = KnapsackProblem(10, 10)
 tsm = TravelSalesManProblem(7)
 sfp = SumFunctionProblem(10, -5, 5)
-cec = Cec2017(function=functions.f1)
+# cec = Cec2017(function=functions.f1)
 
-################################################################
-s = HillClimbing(cec,max_random=30)
-s.method = s.randomMutation
-
-s.problem.printInformation()
-s.printSolution()
+# ################################################################
+g = GeneticAlgorithm(ksp)
+g.problem.printInformation()
 
 for _ in range(10):
-    s.optimize(epochs=10)
-    print(s.evaluate(s.solution))
-    if s.is_best:
-        s.resetProblem()
+    g.optimize(1, 0,
+               g.selection_functions.tournament, 
+               g.crossover_functions.singlePoint, 
+               g.mutation_functions.singlePoint, 
+               g.replace_functions.randomChange)
+    print(g.bestIndividual())
+
+print(g.population)
+
+# ################################################################
+# s = HillClimbing(cec,max_random=30)
+# s.method = s.randomMutation
+
+# s.problem.printInformation()
+# s.printSolution()
+
+# for _ in range(10):
+#     s.optimize(epochs=10)
+#     print(s.evaluate(s.solution))
+#     if s.is_best:
+#         s.resetProblem()
 
 
 # ################################################################
