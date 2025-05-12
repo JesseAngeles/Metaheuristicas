@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import *
-from Algorithms.SimulatedAnnealing import SimulatedAnnealing
-from Problems.SumFunctionProblem import SumFunctionProblem
+from Algorithms.SimulatedAnnealing1 import SimulatedAnnealing
+from Problems.SumFunctionProblem1 import SumFunctionProblem
 from UI.components import draw_bars, back_to_root
 
 def sum_function_window(root):

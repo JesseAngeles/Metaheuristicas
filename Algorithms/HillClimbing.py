@@ -4,6 +4,7 @@ class HillClimbing(Metaheuristic):
     def __init__(self, problem, max_random:int = 30):
         super().__init__(problem)
         self.max_random: int = max_random
+        self.resetProblem()
 
     # Abstract methods
     def resetProblem(self):

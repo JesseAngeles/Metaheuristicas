@@ -6,7 +6,6 @@ from Problems.Problem import Problem
 class Metaheuristic(ABC):
     def __init__(self, problem: Problem):
         self.problem = problem
-        self.resetProblem()
 
     # Abstract methods
     @abstractmethod

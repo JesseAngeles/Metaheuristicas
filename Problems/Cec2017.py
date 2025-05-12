@@ -3,8 +3,8 @@ import numpy as np
 
 from Problems.Problem import Problem
 
-class KnapsackProblem(Problem):
-    def __init__(self, function: callable, low:int , high:int , dimention:int , alpha:int = 1):
+class Cec2017(Problem):
+    def __init__(self, function: callable, low:int = -100 , high:int = 100 , dimention:int = 20 , alpha:int = 1):
         super().__init__()
         self.generateInformation(function, low, high, dimention, alpha)
 
@@ -22,7 +22,7 @@ class KnapsackProblem(Problem):
 
     def generateInitialSolution(self):
         solution = np.random.uniform(low=self.information["low"],
-                                     high=self.information["hight"],
+                                     high=self.information["high"],
                                      size=self.information["dimention"]).tolist()
 
         return solution

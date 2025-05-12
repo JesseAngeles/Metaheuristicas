@@ -1,8 +1,8 @@
 import time
 import csv
-from Problems.Cec2017 import Cec2017
+from Problems.Cec20171 import Cec2017
 from Problems.cec2017.cec2017.simple import *
-from Algorithms.SimulatedAnnealing import SimulatedAnnealing
+from Algorithms.SimulatedAnnealing1 import SimulatedAnnealing
 
 functions = { f1, f2, f3, f4, f5, f6, f7, f8, f9, f10 }
 

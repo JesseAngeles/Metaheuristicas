@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-from Algorithms.SimulatedAnnealing import SimulatedAnnealing
+from Algorithms.SimulatedAnnealing1 import SimulatedAnnealing
 from Problems.KnapsackProblem import KnapsackProblem
 from UI.components import draw_items, back_to_root
 

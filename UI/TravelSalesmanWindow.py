@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
-from Algorithms.SimulatedAnnealing import SimulatedAnnealing
-from Problems.TravelSalesmanProblem import TravelSalesmanProblem
+from Algorithms.SimulatedAnnealing1 import SimulatedAnnealing
+from Problems.TravelSalesmanProblem1 import TravelSalesmanProblem
 from UI.components import draw_cities, back_to_root
 
 def travel_salesman_problem_window(root):

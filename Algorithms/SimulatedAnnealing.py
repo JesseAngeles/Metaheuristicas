@@ -1,75 +1,41 @@
-import random
+import random 
 import math
 
-class SimulatedAnnealing:
-    def __init__(self, information, energy_function ,initial_solution_function, generate_neighbour_function):
-        self.information = information
-        self.energy_function = energy_function
-        self.initial_solution_function = initial_solution_function
-        self.generate_neighbour_function = generate_neighbour_function
-        self.solution = self.initial_solution_function(self.information)
-        self.energy = self.energy_function(self.solution, self.information)
-        self.max_temperature = 1000
-        self.min_temperature = 1
-        self.alpha = 0.95
-        self.max_iter = 100
-        self.reset()
+from Algorithms.Metaheuristic import Metaheuristic 
 
-    def reset(self):
+class SimulatedAnnealing(Metaheuristic):
+    def __init__(self, problem, max_temperature:float = 100, min_temperature:float = 1, alpha:float = 0.95, max_iter:int = 100):
+        super().__init__(problem)
+        self.max_temperature = max_temperature
+        self.min_temperature = min_temperature
+        self.alpha = alpha
+        self.max_iter= max_iter
+        self.resetProblem()
+
+    # Abstract methods
+    def resetProblem(self):
+        super().resetProblem()
         self.iter = 0
-        self.energy = self.energy_function(self.solution, self.information)
+        self.energy = self.problem.objective(self.solution)
         self.temperature = self.max_temperature
-        self.best_solution = self.solution[:]
-        self.best_energy = self.energy_function(self.best_solution, self.information)
 
-    def stepSimpleSimulatedAnnealing(self):
-        if self.temperature > self.min_temperature:
-            if self.iter < self.max_iter:
-                neighbour = self.generate_neighbour_function(self.solution)
-                neighbour_energy = self.energy_function(neighbour, self.information)
+    def optimize(self, epochs: int = 1):
+        if not self.is_best:
+            for _ in range(epochs):
+                if self.temperature > self.min_temperature:
+                    if self.iter < self.max_iter:
+                        neighbour = self.problem.getRandomNeighbour(self.solution)
+                        neighbour_energy = self.problem.objective(neighbour)
 
-                delta = neighbour_energy - self.energy
-                if delta > 0 or random.random() < math.exp(delta / self.temperature):
-                    self.solution = neighbour
-                    self.energy = neighbour_energy
+                        delta = neighbour_energy - self.energy
+                        if delta > 0 or random.random() < math.exp(delta / self.temperature):
+                            self.solution = neighbour
+                            self.energy = neighbour_energy
 
-                    if self.energy > self.best_energy:
-                        self.best_solution = self.solution[:]
-                        self.best_energy = self.energy
+                        self.iter += 1
+                    else:
+                        self.iter = 0
+                        self.temperature *= self.alpha
 
-                self.iter += 1
-            else:
-                self.iter = 0
-                self.temperature *= self.alpha
-        else:
-            return False
-        
-        return True
-
-    def simpleSimulatedAnnealing(self):
-        current_solution = self.solution
-        current_energy = self.energy_function(current_solution, self.information)
-        best_solution = current_solution[:]
-        best_energy = current_energy
-        temperature = self.max_temperature
-
-        while temperature > self.min_temperature:
-            for _ in range(self.max_iter):
-                neighbour = self.generate_neighbour_function(current_solution)
-                neighbour_energy = self.energy_function(neighbour, self.information)
-
-                delta = neighbour_energy - current_energy
-                if delta > 0 or random.random() < math.exp(delta / temperature):
-                    current_solution = neighbour
-                    current_energy = neighbour_energy
-
-                    if current_energy > best_energy:
-                        best_solution = current_solution[:]
-                        best_energy = current_energy
-                        
-            temperature *= self.alpha
-
-        self.solution = best_solution
-
-    def print(self):
-        print(self.solution, self.energy_function(self.solution, self.information))
+    def printSolution(self):
+        print(f'Solution: {self.solution}: {self.evaluate(self.solution)}|{self.temperature}')
