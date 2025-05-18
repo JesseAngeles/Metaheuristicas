@@ -19,7 +19,7 @@ g.problem.printInformation()
 
 for _ in range(10):
     g.optimize(1, 0,
-               g.selection_functions.tournament, 
+               g.selection_functions.universalRandom, 
                g.crossover_functions.singlePoint, 
                g.mutation_functions.singlePoint, 
                g.replace_functions.randomChange)
