@@ -17,15 +17,16 @@ sfp = SumFunctionProblem(10, -5, 5)
 g = GeneticAlgorithm(ksp)
 g.problem.printInformation()
 
-for _ in range(10):
+for _ in range(1):
     g.optimize(1, 0,
-               g.selection_functions.universalRandom, 
-               g.crossover_functions.singlePoint, 
+               g.selection_functions.negativeAssortativeMating, 
+               g.crossover_functions.twoPoint, 
                g.mutation_functions.singlePoint, 
-               g.replace_functions.randomChange)
+               g.replace_functions.random)
     print(g.bestIndividual())
 
 print(g.population)
+
 
 # ################################################################
 # s = HillClimbing(cec,max_random=30)
