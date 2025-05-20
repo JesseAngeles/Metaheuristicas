@@ -25,6 +25,7 @@ class ReplaceFunctions:
 
         return survivors
 
+    # todo Corregir
     @staticmethod
     def deterministCrowding(population: list, replace: list, objective):
         new_population = []
@@ -50,6 +51,7 @@ class ReplaceFunctions:
 
         return population
 
+    # todo Corregir
     @staticmethod
     def restrictedTournament(population: list, replace: list, objective):
         survivors = population.copy()

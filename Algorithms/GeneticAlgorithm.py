@@ -1,4 +1,5 @@
 import random
+from functools import partial
 
 from Algorithms.Metaheuristic import Metaheuristic
 from Algorithms.GASelectionFunctions import SelectionFunctions as Selection
@@ -40,17 +41,23 @@ class GeneticAlgorithm(Metaheuristic):
         return max(objectives)
 
     # SET functions
-    def setSelection(self, selection):
-        self.selection = selection
+    def setSelection(self, selection, selection_rate = None):
+        if selection_rate:
+            self.selection = partial(selection, selection_rate = selection_rate)
+        else:
+            self.selection = selection
 
-    def setCrossover(self, crossover):
-        self.crossover = crossover
+    def setCrossover(self, crossover, crossover_rate = None):
+        if crossover_rate:
+            self.crossover = partial(crossover, crossover_rate = crossover_rate)
+        else:
+            self.crossover = crossover
 
-    def setMutation(self, mutation):
-        self.mutation = mutation
-
-    def getReplace(self, replace):
-        self.replace = replace
+    def setMutation(self, mutation, mutation_rate = None):
+        if mutation_rate:
+            self.mutation = partial(mutation, mutation_rate = mutation_rate)
+        else:
+            self.mutation = mutation
 
     def setReplace(self, replace):
         self.replace = replace

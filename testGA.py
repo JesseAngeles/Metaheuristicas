@@ -10,12 +10,12 @@ ksp = KnapsackProblem(100, 100)
 tsm = TravelSalesManProblem(7)
 sfp = SumFunctionProblem(10, -5, 5)
 
-
 g = GeneticAlgorithm(ksp)
 
-g.setSelection(partial(g.selection_functions.tournament, selection_rate=0.5))
-g.setCrossover(partial(g.crossover_functions.uniform, crossover_rate = 0.9))
-g.setMutation(partial(g.mutation_functions.singlePoint, mutation_rate = 0.1))
+g.setSelection(g.selection_functions.proportional)
+g.setCrossover(g.crossover_functions.onePoint)
+g.setMutation(g.mutation_functions.singlePoint, mutation_rate = 0.1)
+g.setReplace(g.replace_functions.elitism)
 
 g.printConfiguration()
 
@@ -25,7 +25,4 @@ for _ in range(1000):
     if max < g.bestIndividual():
         max = g.bestIndividual()
         print(max)
-    if max > 0:
-        g.setSelection(partial(g.selection_functions.negativeAssortativeMating))
-        g.optimize()
-        g.setSelection(partial(g.selection_functions.tournament, selection_rate=0.5))
+        

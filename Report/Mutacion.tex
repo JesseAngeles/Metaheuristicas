@@ -1,0 +1,31 @@
+\chapter{Operador de Mutación}
+
+Una mutación es un cambio en el cromosoma que altera su valor; esta se aplica de forma independiente en cada individuo bajo cierta probabilidad $p$. La inclusión de mutaciones permite mantener la diversidad genética de la población y evita el estancamiento en óptimos locales cuando hay demasiada similitud entre individuos.
+
+Dado que cada problema puede tener un espacio diferente (binario, reales, permutaciones), cada uno debe implementar una función que permita obtener un vecino aleatorio. Un vecino es una solución cercana a la actual, pero con una ligera variación. En este caso, la función \textit{Single Point} obtiene un vecino dada una solución actual, respetando la estructura del espacio de búsqueda.
+
+\section{Single Point}
+
+Este operador evalúa, para cada individuo en la población, si debe aplicarse una mutación basada en la probabilidad establecida. Si la condición se cumple, el individuo es reemplazado por un vecino generado por la función específica del problema; de lo contrario, permanece igual.
+
+Este algoritmo permite mantener diversidad en la población sin alterar drásticamente la estructura de los individuos. Ademas, de que permite adaptarse a diferentes representaciones (binaria, real, permutaciones), aunque es fuertemente dependiente de la calidad de la función de \textit{getRandomNeighbour}.
+
+\begin{algorithm}[H]
+	\caption{Single Point Mutation \\ \textbf{Input} \{ population, problem, mutation\_rate \}}
+	\begin{algorithmic}[1]
+		\Function{SinglePoint}{population, problem, mutation\_rate}
+		\State mutations $\gets$ [ ]
+		\For{individual \textbf{in} population}
+		\If{random() $\leq$ mutation\_rate}
+		\State neighbor $\gets$ problem.getRandomNeighbour(individual)
+		\State mutations.append(neighbor)
+		\Else
+		\State mutations.append(individual)
+		\EndIf
+		\EndFor
+		\State \Return mutations
+		\EndFunction
+	\end{algorithmic}
+	\label{alg:mutation_single}
+\end{algorithm}
+

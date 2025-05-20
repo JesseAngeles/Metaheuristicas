@@ -146,6 +146,7 @@ class CrossoverFunctions:
 
         return generation
 
+    # TODO Corregir
     @staticmethod
     def uniformOrderBased(population: list):
         generation = []
@@ -177,6 +178,7 @@ class CrossoverFunctions:
 
         return generation
 
+    # TODO Corregir
     @staticmethod
     def orderBased(population: list):
         generation = []

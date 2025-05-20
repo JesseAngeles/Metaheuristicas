@@ -1,0 +1,95 @@
+\chapter{Operador de Reemplazo}
+
+Este último operador se encarga de reintegrar la nueva población generada (producto de la selección, cruza y mutación) con la población actual. Su función es decidir quiénes sobreviven a la siguiente generación, balanceando la exploración del espacio de búsqueda con la preservación de soluciones prometedoras.
+
+\section{Random}
+
+Este enfoque selecciona aleatoriamente un subconjunto de la población actual para conservarlo y luego lo complementa con los nuevos individuos generados. No se considera la aptitud, lo que favorece la diversidad pero puede generar regresión en la calidad.
+
+\begin{algorithm}[H]
+	\caption{Random Replacement \\ \textbf{Input} \{ population, replace \}}
+	\begin{algorithmic}[1]
+		\Function{RandomReplace}{population, replace}
+		\State $n \gets$ \texttt{len(population)}
+		\State $k \gets$ \texttt{len(replace)}
+		\State survivors $\gets$ \texttt{random.sample(population, n - k)}
+		\State survivors $\gets$ survivors $+$ replace
+		\State \Return survivors
+		\EndFunction
+	\end{algorithmic}
+	\label{alg:replacement_random}
+\end{algorithm}
+
+Este algoritmo favorece la diversidad pero no garantiza la preservación de buenos individuos, porl o que puede perder soluciones óptimas.
+
+\section{Elitism}
+
+Este método conserva a los mejores individuos de la población actual, asegurando que las soluciones de alta calidad no se pierdan entre generaciones. Luego se complementa la población con los nuevos individuos generados.
+
+\begin{algorithm}[H]
+	\caption{Elitism Replacement \\ \textbf{Input} \{ population, replace, objective \}}
+	\begin{algorithmic}[1]
+		\Function{ElitismReplace}{population, replace, objective}
+		\State $n \gets$ \texttt{len(population)}
+		\State $k \gets$ \texttt{len(replace)}
+		\State sorted\_pop $\gets$ \texttt{sorted(population, key=objective)}
+		\State survivors $\gets$ sorted\_pop$[:n-k]$
+		\State survivors $\gets$ survivors $+$ replace
+		\State \Return survivors
+		\EndFunction
+	\end{algorithmic}
+	\label{alg:replacement_elitism}
+\end{algorithm}
+
+A diferencia de \textit{random}, este si preserva los mejores individuos y acelera la convergencia hacia soluciones óptimas pero con riesgo de perder diversidad genética e incluso llevar a estancarlo en óptimos locales si se descuidan otros aspectos.
+
+\section{Deterministic Crowding}
+
+Este método busca mantener la diversidad genética mediante una competencia local entre padres e hijos similares. Cada hijo compite directamente con su padre más parecido (según una medida de distancia), y sobrevive el de mejor aptitud.
+
+\begin{algorithm}[H]
+	\caption{Deterministic Crowding Replacement \\ \textbf{Input} \{ parents, offspring, objective, distance \}}
+	\begin{algorithmic}[1]
+		\Function{DeterministicCrowding}{parents, offspring, objective, distance}
+		\State survivors $\gets$ [ ]
+		\For{$i = 0$ \textbf{to} len(parents) step 2}
+		\State $p_1, p_2 \gets$ parents[i], parents[i+1]
+		\State $o_1, o_2 \gets$ offspring[i], offspring[i+1]
+		
+		\If{distance($p_1$, $o_1$) + distance($p_2$, $o_2$) < distance($p_1$, $o_2$) + distance($p_2$, $o_1$)}
+		\State winners $\gets$ [ \texttt{argmax}($p_1$, $o_1$), \texttt{argmax}($p_2$, $o_2$) ]
+		\Else
+		\State winners $\gets$ [ \texttt{argmax}($p_1$, $o_2$), \texttt{argmax}($p_2$, $o_1$) ]
+		\EndIf
+		\State survivors.extend(winners)
+		\EndFor
+		\State \Return survivors
+		\EndFunction
+	\end{algorithmic}
+	\label{alg:replacement_deterministic_crowding}
+\end{algorithm}
+
+Mantiene la diversidad poblacional y favorece la exploración de nichos a cambio de poder computacional.
+
+\section{Restricted Tournament Selection (RTS)}
+
+Este método también promueve la diversidad al restringir las competencias a individuos similares. Cada hijo compite contra un subconjunto aleatorio de la población, y se reemplaza al más parecido si el hijo tiene mejor aptitud.
+
+\begin{algorithm}[H]
+	\caption{Restricted Tournament Selection \\ \textbf{Input} \{ population, offspring, objective, window\_size, distance \}}
+	\begin{algorithmic}[1]
+		\Function{RTS}{population, offspring, objective, window\_size, distance}
+		\For{child in offspring}
+		\State window $\gets$ random.sample(population, window\_size)
+		\State closest $\gets$ \texttt{argmin}(\texttt{[distance(child, w) for w in window]})
+		\If{objective(child) > objective(closest)}
+		\State population[population.index(closest)] $\gets$ child
+		\EndIf
+		\EndFor
+		\State \Return population
+		\EndFunction
+	\end{algorithmic}
+	\label{alg:replacement_rts}
+\end{algorithm}
+
+Mantiene estructuras locales de la población pero depende del calculo de distancias, lo que puede ser costoso.
