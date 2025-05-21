@@ -1,18 +1,18 @@
 \chapter{Operador de Selección}
 
-La función de selección elige las parejas (o subconjuntos) de individuos que fungirán como padres para reproducirse, combinar sus genes y generar a la siguiente nueva generación. 
+La función de selección elige las parejas (o subconjuntos) de individuos que fungirán como padres para reproducirse, combinar sus genes y generar la siguiente generación.
 
-A continuación se presentan algunas funciones de selección, las cuales (en su mayoria) requieren de los siguientes parámetros:
+A continuación se presentan algunas funciones de selección, las cuales (en su mayoría) requieren los siguientes parámetros:
 \begin{itemize}
-	\item population: Subconjunto de la población a la cual se le aplica el algoritmo.
-	\item objective: Función de evaluación.
+	\item \texttt{population}: Subconjunto de la población al cual se le aplica el algoritmo.
+	\item \texttt{objective}: Función de evaluación.
 \end{itemize}
 
 Algunas de las funciones son las siguientes:
 
 \section{Universal Random}
 
-La selección aleatoria universal (\textit{Universal Sampling}) es una variante estocástica de la selección proporcional que busca reducir la varianza introducida por la aleatoriedad. En lugar de seleccionar los individuos uno por uno, se generan múltiples puntos equidistantes sobre el intervalo $[0,1]$ para garantizar una muestra más representativa de la población, según sus probabilidades acumuladas.
+La selección aleatoria universal (\textit{Universal Random}) es una variante estocástica de la selección proporcional que busca reducir la varianza introducida por la aleatoriedad. En lugar de seleccionar los individuos uno por uno, se generan múltiples puntos equidistantes sobre el intervalo $[0,1]$ para garantizar una muestra más representativa de la población, según sus probabilidades acumuladas.
 
 Sea $n$ el número de individuos a seleccionar, se generan $n$ números equidistantes:
 \[
@@ -44,10 +44,9 @@ Cada número $r_i$ se mapea sobre la distribución acumulada de probabilidades p
 
 Este método asegura una cobertura más uniforme de la población en comparación con la selección proporcional simple, reduciendo la varianza en la selección. Es particularmente útil cuando se desea mantener una representación proporcional sin depender completamente de la aleatoriedad individual de cada extracción.
 
-
 \section{Tournament}
 
-El algoritmo \ref{alg:tournament_selection} recibe de manera adicional el parámetro \textit{selection\_rate}, que define el porcentaje de la población que participará en cada torneo.
+El algoritmo \ref{alg:tournament_selection} recibe, de manera adicional, el parámetro \texttt{selection\_rate}, que define el porcentaje de la población que participará en cada torneo.
 
 Dada una población $P$, se selecciona aleatoriamente un subconjunto $Q \subseteq P$. El individuo $q_i$ con la mayor aptitud $f(q_i)$ es seleccionado para formar parte del conjunto de padres $S$:
 \[
@@ -73,7 +72,7 @@ S = \left\{ \arg\max_{q \in Q} f(q) \,\middle|\, Q \subseteq P \right\}
 	\label{alg:tournament_selection}
 \end{algorithm}
 
-Este método es eficiente para poblaciones de cualquier tamaño. Además, el parámetro \textit{selection\_rate} permite controlar la presión selectiva: torneos pequeños fomentan la diversidad, mientras que torneos grandes intensifican la explotación de los individuos más aptos.
+Este método es eficiente para poblaciones de cualquier tamaño. Además, el parámetro \texttt{selection\_rate} permite controlar la presión selectiva: torneos pequeños fomentan la diversidad, mientras que torneos grandes intensifican la explotación de los individuos más aptos.
 
 \section{Proportional}
 
@@ -106,12 +105,11 @@ Sea $P$ la población con $n$ individuos y $f(p_i)$ la función de aptitud del i
 
 Este método es intuitivo y funciona bien cuando las diferencias de aptitud entre individuos no son extremas. Sin embargo, si las diferencias son muy marcadas, puede provocar convergencia prematura. También es sensible a funciones de aptitud negativas o cercanas a cero, por lo que puede requerir normalización.
 
-
 \section{Negative Assortative Mating}
 
 El apareamiento negativo asortativo busca maximizar la diversidad genética al emparejar individuos que sean lo más diferentes posible entre sí. Este método es útil para evitar la convergencia prematura, ya que fomenta la exploración del espacio de soluciones.
 
-Se utiliza una función de similitud $d(a, b)$ que cuantifica cuán parecidos son dos individuos $a$ y $b$. Esta función puede estar basada en distancia euclidiana, Hamming, o alguna otra métrica según el tipo de representación del cromosoma. El objetivo es seleccionar, para cada individuo, una pareja que minimice dicha similitud.
+Se utiliza una función de similitud $d(a, b)$ que cuantifica cuán parecidos son dos individuos $a$ y $b$. Esta función puede estar basada en distancia euclidiana, Hamming u otra métrica, según el tipo de representación del cromosoma. El objetivo es seleccionar, para cada individuo, una pareja que minimice dicha similitud.
 
 \[
 \text{Para cada } p_i \in P_{\text{seleccionado}},\quad p_j = \arg\min_{x \in P} \, d(p_i, x)
@@ -125,7 +123,7 @@ Se utiliza una función de similitud $d(a, b)$ que cuantifica cuán parecidos so
 		\State parents $\gets$ []
 		\For{cada $p_i$ en selected}
 		\State distances $\gets$ [similarity\_function($p_i$, $x$) for $x$ in population]
-		\State remove $p_i$ de la población temporal para evitar emparejar consigo mismo
+		\State eliminar $p_i$ de la población temporal para evitar emparejarlo consigo mismo
 		\State partner $\gets$ individuo con menor valor de distancia
 		\State parents.append(($p_i$, partner))
 		\EndFor \\

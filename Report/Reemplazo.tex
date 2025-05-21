@@ -4,10 +4,10 @@ Este último operador se encarga de reintegrar la nueva población generada (pro
 
 \section{Random}
 
-Este enfoque selecciona aleatoriamente un subconjunto de la población actual para conservarlo y luego lo complementa con los nuevos individuos generados. No se considera la aptitud, lo que favorece la diversidad pero puede generar regresión en la calidad.
+Este enfoque selecciona aleatoriamente un subconjunto de la población actual para conservarlo y luego lo complementa con los nuevos individuos generados. No se considera la aptitud, lo que favorece la diversidad, pero puede generar una regresión en la calidad.
 
 \begin{algorithm}[H]
-	\caption{Random Replacement \\ \textbf{Input} \{ population, replace \}}
+	\caption{Random Replacement \\ \textbf{Input} \{population, replace\}}
 	\begin{algorithmic}[1]
 		\Function{RandomReplace}{population, replace}
 		\State $n \gets$ \texttt{len(population)}
@@ -20,14 +20,14 @@ Este enfoque selecciona aleatoriamente un subconjunto de la población actual pa
 	\label{alg:replacement_random}
 \end{algorithm}
 
-Este algoritmo favorece la diversidad pero no garantiza la preservación de buenos individuos, porl o que puede perder soluciones óptimas.
+Este algoritmo favorece la diversidad, pero no garantiza la preservación de buenos individuos, por lo que puede perder soluciones óptimas.
 
-\section{Elitism}
+\section{Elitismo}
 
 Este método conserva a los mejores individuos de la población actual, asegurando que las soluciones de alta calidad no se pierdan entre generaciones. Luego se complementa la población con los nuevos individuos generados.
 
 \begin{algorithm}[H]
-	\caption{Elitism Replacement \\ \textbf{Input} \{ population, replace, objective \}}
+	\caption{Elitism Replacement \\ \textbf{Input} \{population, replace, objective\}}
 	\begin{algorithmic}[1]
 		\Function{ElitismReplace}{population, replace, objective}
 		\State $n \gets$ \texttt{len(population)}
@@ -41,14 +41,14 @@ Este método conserva a los mejores individuos de la población actual, aseguran
 	\label{alg:replacement_elitism}
 \end{algorithm}
 
-A diferencia de \textit{random}, este si preserva los mejores individuos y acelera la convergencia hacia soluciones óptimas pero con riesgo de perder diversidad genética e incluso llevar a estancarlo en óptimos locales si se descuidan otros aspectos.
+A diferencia de \textit{random}, este sí preserva los mejores individuos y acelera la convergencia hacia soluciones óptimas, aunque con el riesgo de perder diversidad genética e incluso de estancarse en óptimos locales si se descuidan otros aspectos.
 
 \section{Deterministic Crowding}
 
 Este método busca mantener la diversidad genética mediante una competencia local entre padres e hijos similares. Cada hijo compite directamente con su padre más parecido (según una medida de distancia), y sobrevive el de mejor aptitud.
 
 \begin{algorithm}[H]
-	\caption{Deterministic Crowding Replacement \\ \textbf{Input} \{ parents, offspring, objective, distance \}}
+	\caption{Deterministic Crowding Replacement \\ \textbf{Input} \{parents, offspring, objective, distance\}}
 	\begin{algorithmic}[1]
 		\Function{DeterministicCrowding}{parents, offspring, objective, distance}
 		\State survivors $\gets$ [ ]
@@ -69,14 +69,14 @@ Este método busca mantener la diversidad genética mediante una competencia loc
 	\label{alg:replacement_deterministic_crowding}
 \end{algorithm}
 
-Mantiene la diversidad poblacional y favorece la exploración de nichos a cambio de poder computacional.
+Este enfoque mantiene la diversidad poblacional y favorece la exploración de nichos, a cambio de un mayor costo computacional.
 
 \section{Restricted Tournament Selection (RTS)}
 
 Este método también promueve la diversidad al restringir las competencias a individuos similares. Cada hijo compite contra un subconjunto aleatorio de la población, y se reemplaza al más parecido si el hijo tiene mejor aptitud.
 
 \begin{algorithm}[H]
-	\caption{Restricted Tournament Selection \\ \textbf{Input} \{ population, offspring, objective, window\_size, distance \}}
+	\caption{Restricted Tournament Selection \\ \textbf{Input} \{population, offspring, objective, window\_size, distance\}}
 	\begin{algorithmic}[1]
 		\Function{RTS}{population, offspring, objective, window\_size, distance}
 		\For{child in offspring}
@@ -92,4 +92,4 @@ Este método también promueve la diversidad al restringir las competencias a in
 	\label{alg:replacement_rts}
 \end{algorithm}
 
-Mantiene estructuras locales de la población pero depende del calculo de distancias, lo que puede ser costoso.
+Este método mantiene estructuras locales dentro de la población, aunque depende del cálculo de distancias, lo cual puede resultar costoso computacionalmente.

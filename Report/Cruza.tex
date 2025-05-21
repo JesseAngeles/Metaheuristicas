@@ -70,7 +70,7 @@ h[i] = U\left( \text{min}_i - d, \text{max}_i + d \right)
 \quad \text{donde } d = \alpha \cdot (\text{max}_i - \text{min}_i)
 \]
 
-El parámetro $\alpha$ controla cuánto se puede explorar fuera del rango original. La función $U$ es la función de distribución uniforme continua.
+El parámetro $\alpha$ controla cuánto se puede explorar fuera del rango original. La función $U$ representa la distribución uniforme continua.
 
 \section{Simulated Binary (SBX)}
 
@@ -107,15 +107,14 @@ Este operador es útil cuando el orden de los elementos en el cromosoma es relev
 		\hline
 		\textbf{Operador de Cruza} & \textbf{Espacio que abarca} & \textbf{Representación}  \\ \hline
 		One Point                  & Local                        & Binaria             \\ \hline
-		Two Point                 & Local                        & Binaria             \\ \hline
-		Uniform                   & Moderado                     & Binaria       \\ \hline
-		Arithmetic                & Local                        & Real                 \\ \hline
-		Blend (BLX-$\alpha$)       & Global (controlado por $\alpha$) & Real\\ \hline
-		Simulated Binary (SBX)     & Global (controlado por $\eta$) & Real   \\ \hline
-		Uniform Order Based       & Moderado                     & Permutacional    \\ \hline
-		Order Based               & Moderado                     & Permutacional           \\ \hline
+		Two Point                  & Local                        & Binaria             \\ \hline
+		Uniform                    & Moderado                     & Binaria             \\ \hline
+		Arithmetic                 & Local                        & Real                \\ \hline
+		Blend (BLX-$\alpha$)       & Global (controlado por $\alpha$) & Real          \\ \hline
+		Simulated Binary (SBX)     & Global (controlado por $\eta$)   & Real          \\ \hline
+		Uniform Order Based        & Moderado                     & Permutacional       \\ \hline
+		Order Based                & Moderado                     & Permutacional       \\ \hline
 	\end{tabular}
 	\caption{Comparativa de operadores de cruza según el tipo de representación y cobertura del espacio de búsqueda.}
 	\label{tab:cross_comparison}
 \end{table}
-

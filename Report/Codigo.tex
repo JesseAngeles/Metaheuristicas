@@ -2,60 +2,88 @@
 
 \section{Problem}
 
+Los problemas a optimizar siguen una mista estructura. Dado esto, se optó por diseñar una clase que generaliza el problema y permite y facilita la definición de nuevos problemas.
+
+El código \ref{lst:problem} incluye los siguientes métodos los cuales deben de ser implementados por sus clases hijas:
+\begin{itemize}
+	\item \textit{generateInformation}: Función que define la información necesaria para calcular la función objetivo. La información adicional depende del problema.
+	\item \textit{objective}: Función que calcula la utilidad de la solución, si es un problema de minimización tiene que devolver con el signo opuesto. 
+	\item \textit{generateInitialSolution}: Función que genera una solución.
+	\item \textit{getRandomNeighbour}: Obtiene un vecino de forma aleatoria.
+	\item \textit{getNextNeighbour}: Si es necesario manejar indices, esta función permite obtener un vecino tras otro.
+	\item \textit{getNeighbours}: Devuelve todos los vecinos.
+\end{itemize}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:problem} ,caption={Clase \textit{problem}}]
+class Problem(ABC):
+  def __init__(self,):
+  self.information:Any = {}
+
+  @abstractmethod
+  def generateInformation(self, *args, **kwargs) -> None: pass
+
+  @abstractmethod
+  def objective(self, solution: Any) -> float: pass
+
+  @abstractmethod
+  def generateInitialSolution(self) -> Any: pass
+
+  @abstractmethod
+  def getRandomNeighbour(self, solution:Any) -> Any: pass
+
+  @abstractmethod
+  def getNextNeighbour(self, solution:Any, *args, **kwargs) -> Any: pass
+
+  @abstractmethod
+  def getNeighbours(self, solution: Any) -> list: pass
+
+  @abstractmethod
+  def printInformation(self) -> None: pass
+\end{lstlisting}
 
 \subsubsection{Knapsack problem}
+
+La clase \textit{knapsackProblem} hereda de la clase \textit{Problem} e implementa las siguientes funciones.
 
 La función \ref{lst:kp-gi} genera de manera aleatoria un conjunto de elementos en la mochila con pesos y valores aleatorios en un rango de $[1,10]$. La función \ref{lst:kp-e} calcula la energía del sistema la cual suma todos los pesos y valores de los elementos que se encuentran en la solución, si el peso es menor al capacidad de la mochila entonces devuelve el valor de la mochila, en caso contrario devuelve la diferencia de el peso actual menos la capacidad máxima.
 
 La función \ref{lst:kp-gis} genera soluciones aleatorias de combinaciones y no regresa ninguna de ellas hasta que el peso de la solución sea menor a la capacidad máxima. Finalmente, la función \ref{lst:kp-rn} se encarga de generar un vecino de forma aleatoria, primero selecciona un elemento aleatorio del vector y después lo invierte.  
 
-\begin{lstlisting}[style=pythonstyle, label={lst:kp-gi} ,caption={Función \textit{generate\_information} de Knapsack problem}]
-	def generate_information(self, items, capacity):
-	self.information = {
-		"items": items,
-		"values": [(random.randint(1,10), random.randint(1, 10)) for _ in range(items)],
-		"capacity": capacity
-	}
+\begin{lstlisting}[style=pythonstyle, label={lst:kp-gi} ,caption={Función \textit{generateInformation} de Knapsack problem}]
+def generate_information(self, items, capacity):
+  self.information = {
+	"items": items,
+	"values": [(random.randint(1,10), random.randint(1, 10)) for _ in range(items)],
+	"capacity": capacity
+  }
 \end{lstlisting}
 
-\begin{lstlisting}[style=pythonstyle, label={lst:kp-e} ,caption={Función \textit{energy} de Knapsack problem}]
-	def energy(self, solution, information):
-	total_weight = total_value = 0
-	for i in range(len(solution)):
-	if solution[i] == 1:
-	total_weight += information['values'][i][0]
-	total_value += information['values'][i][1]
-	
-	if total_weight > information['capacity']:
-	return information['capacity'] - total_weight
-	return total_value
+\begin{lstlisting}[style=pythonstyle, label={lst:kp-e} ,caption={Función \textit{objective} de Knapsack problem}]
+def objective(self, solution):
+  total_weight = total_value = 0
+  for i, selected in enumerate(solution):
+    if selected:
+      total_weight += self.information["values"][i][0]
+  	  total_value += self.information["values"][i][1]
+  if total_weight > self.information["capacity"]:
+    return self.information["capacity"] - total_weight 
+  return total_value
 \end{lstlisting}
 
-\begin{lstlisting}[style=pythonstyle, label={lst:kp-gis} ,caption={Función \textit{generate\_initial\_solution} de Knapsack problem}]
-	def generate_initial_solution(self, information):
-	while True:
-	solution = [random.randint(0,1) for _ in information['values']]
-	if self.energy(solution, information) > 0:
-	return solution
+\begin{lstlisting}[style=pythonstyle, label={lst:kp-gis} ,caption={Función \textit{generateInitialSolution} de Knapsack problem}]
+def generateInitialSolution(self):
+  return [random.randint(0, 1) for _ in self.information['values']]
 \end{lstlisting}
 
-
-\begin{lstlisting}[style=pythonstyle, label={lst:kp-rn} ,caption={Función \textit{random\_neighbour} de Knapsack problem}]
-	def random_neighbour(self, solution):
-	neighbour = solution[:]
-	index = random.randint(0, len(solution) - 1)
-	neighbour[index] = not neighbour[index]
-	return neighbour     
+\begin{lstlisting}[style=pythonstyle, label={lst:kp-rn} ,caption={Función \textit{getRandomNeighbour} de Knapsack problem}]
+def getRandomNeighbour(self, solution):
+  neighbour = solution[:]
+  index = random.randint(0, len(solution) - 1)
+  neighbour[index] = 1 - int(neighbour[index])
+  return neighbour  
 \end{lstlisting}
 
-La interfaz de la figura \ref{fig:kp} simula 125 elementos generados de forma aleatorio para ser metidos en una mochila 200 de capacidad. En verde son los objetos que están en la prueba actual de la mochila y en gris los que no. Adicionalmente se utiliza un cuadrado verde para validar que el peso actual sea menor que la capacidad máxima de la mochila.
-
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=\linewidth]{img/kp}
-	\caption{Knapsack Problem Interface}
-	\label{fig:kp}
-\end{figure}
+Para el algoritmo genético, no es necesario especificar el resto de funciones.
 
 \subsection{Travel Salesman Problem}
 
@@ -65,64 +93,55 @@ La función \ref{lst:tsp-e} calcula la energía del sistema. Dado un vector suma
 
 Finalmente, la función \ref{lst:tsp-rn} toma dos indices aleatorios diferentes e invierte los valores de dichas posiciones del vector.
 
-\begin{lstlisting}[style=pythonstyle, label={lst:tsp-gi} ,caption={Función \textit{generate\_information} de Travel Salesman Problem}]
-	def generate_information(self, cities):
-	distances = [[0]*cities for _ in range(cities)]
-	
-	for i in range(cities):
-	for j in range(i, cities):  
-	if i == j:
-	valor = 0  
-	else:
-	valor = random.randint(1, 100)
-	distances[i][j] = valor
-	distances[j][i] = valor 
-	
-	self.information = {
-		"cities" : cities,
-		"distances" : distances
-	}
+\begin{lstlisting}[style=pythonstyle, label={lst:tsp-gi} ,caption={Función \textit{generateInformation} de Travel Salesman Problem}]
+def generateInformation(self, cities: int):
+  distances = [[0]*cities for _ in range(cities)]
+
+  for i in range(cities):
+    for j in range(i, cities):  
+      if i == j:
+        valor = 0  
+      else:
+        valor = random.randint(1, 100)
+      distances[i][j] = valor
+  	  distances[j][i] = valor 
+
+  self.information = {
+	"cities" : cities,
+	"distances" : distances
+  }
 \end{lstlisting}
 
-\begin{lstlisting}[style=pythonstyle, label={lst:tsp-e} ,caption={Función \textit{energy} de Travel Salesman Problem }]
-	def energy(self, solution, information):
-	distance = 0
-	num_cities:int = len(solution)
-	
-	for i in range(num_cities):
-	current_city = solution[i]
-	next_city = solution[(i + 1) % num_cities]  
-	distance += information['distances'][current_city][next_city]
-	
-	return -distance
+\begin{lstlisting}[style=pythonstyle, label={lst:tsp-e} ,caption={Función \textit{Objective} de Travel Salesman Problem }]
+def objective(self, solution):
+  distance = 0
+  num_cities:int = len(solution)
+
+  for i in range(num_cities):
+    current_city = solution[i]
+    next_city = solution[(i + 1) % num_cities]  
+    distance += self.information['distances'][current_city][next_city]
+
+  return -distance
 \end{lstlisting}
 
-\begin{lstlisting}[style=pythonstyle, label={lst:tsp-gis} ,caption={Función \textit{generate\_initial\_solution} de Travel Salesman Problem}]
-	def generate_initial_solution(self, information):
-	solution =  list(range(information['cities']))
-	random.shuffle(solution)
-	return solution     
+\begin{lstlisting}[style=pythonstyle, label={lst:tsp-gis} ,caption={Función \textit{generateInitialSolution} de Travel Salesman Problem}]
+def generateInitialSolution(self):
+  solution =  list(range(self.information['cities']))
+  random.shuffle(solution)
+  return solution   
 \end{lstlisting}
 
-\begin{lstlisting}[style=pythonstyle, label={lst:tsp-rn} ,caption={Función \textit{random\_neighbour} de Travel Salesman Problem}]
-	def random_neighbour(self, solution):
-	neighbour = solution[:]
-	i = j = random.randint(0, len(solution) - 1)
-	while j == i:
-	j = random.randint(0, len(solution) - 1)
-	neighbour[i], neighbour[j] = neighbour[j], neighbour[i]
-	
-	return neighbour
+\begin{lstlisting}[style=pythonstyle, label={lst:tsp-rn} ,caption={Función \textit{getRandomNeighbour} de Travel Salesman Problem}]
+def getRandomNeighbour(self, solution):
+  neighbour = solution[:]
+  i = j = random.randint(0, len(solution) - 1)
+  while j == i:
+    j = random.randint(0, len(solution) - 1)
+  neighbour[i], neighbour[j] = neighbour[j], neighbour[i]
+
+  return neighbour
 \end{lstlisting}
-
-La interfaz de la figura \ref{fig:tsp} simula 25 ciudades y muestra la exploración de diferentes posibilidades en el espacio de búsqueda. El botón de \textit{distances} muestra la matriz de adyacencia del grafo.
-
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=\linewidth]{img/tsp}
-	\caption{Travel Salesman Problem Interface}
-	\label{fig:tsp}
-\end{figure}
 
 \subsection{Sum function Problem}
 
@@ -130,69 +149,320 @@ La función \ref{lst:sfp-gi} unicamente define el tamaño del vector y los rango
 
 La función \ref{lst:sfp-gis} genera un vector de $n$ elementos aleatorios en los rangos definidos, mientras que la función \ref{lst:sfp-gn} suma  o resta en uno a un elemento aleatorio del vector (dado que se considera una configuración circular, se ajusta el valor si el nuevo valor no se encuentra en el rango).
 
-\begin{lstlisting}[style=pythonstyle, label={lst:sfp-gi} ,caption={Función \textit{generate\_information} de SumFunctionProblem}]
-	def generate_information(self, size, min, max):
-	self.information = {
-		"size": size,
-		"min": min,
-		"max": max
-	}
+\begin{lstlisting}[style=pythonstyle, label={lst:sfp-gi} ,caption={Función \textit{generateInformation} de SumFunctionProblem}]
+def generateInformation(self, size: int, min: int, max: int):
+  self.information = {
+	"size": size,
+	"min": min,
+	"max": max
+  }
 \end{lstlisting}
 
-\begin{lstlisting}[style=pythonstyle, label={lst:sfp-e} ,caption={Función \textit{energy} de SumFunctionProblem}]
-	def energy(self, solution, _):
-	total_sum:float = 0
-	
-	for val in solution:
-	total_sum += val**2
-	
-	return -total_sum
+\begin{lstlisting}[style=pythonstyle, label={lst:sfp-e} ,caption={Función \textit{objective} de SumFunctionProblem}]
+def objective(self, solution):
+  total_sum:float = 0
+
+  for val in solution:
+    total_sum += val**2
+
+  return -total_sum
 \end{lstlisting}
 
-\begin{lstlisting}[style=pythonstyle, label={lst:sfp-gis} ,caption={Función \textit{generate\_initial\_solution} de SumFunctionProblem}]
-	def generate_initial_solution(self, information):
-	solution = [random.randint(information['min'], information['max']) for _ in range(information['size'])]
-	return solution
+\begin{lstlisting}[style=pythonstyle, label={lst:sfp-gis} ,caption={Función \textit{generateInitialSolution} de SumFunctionProblem}]
+def generateInitialSolution(self):
+  solution = [random.randint(self.information['min'], self.information['max']) for _ in range(self.information['size'])]
+  return solution
 \end{lstlisting}
 
-\begin{lstlisting}[style=pythonstyle, label={lst:sfp-gn} ,caption={Función \textit{generate\_neighbour} de SumFunctionProblem}]
-	def random_neighbour(self, solution):
-	neighbour = solution[:]
-	index = random.randint(0, len(solution) - 1)
-	sign = random.choice([-1 , 1])
-	neighbour[index] += sign
-	
-	if neighbour[index] > self.information['max']:
-	neighbour[index] = self.information['min']
-	
-	if neighbour[index] < self.information['min']:
+\begin{lstlisting}[style=pythonstyle, label={lst:sfp-gn} ,caption={Función \textit{getRandomNeighbour} de CEC 2017}]
+def getRandomNeighbour(self, solution):
+  neighbour = solution[:]
+  index = random.randint(0, len(solution) - 1)
+  sign = random.choice([-1 , 1])
+  neighbour[index] += sign
+
+  if neighbour[index] > self.information['max']:
+    neighbour[index] = self.information['min']
+
+  if neighbour[index] < self.information['min']:
 	neighbour[index] = self.information['max']
-	
-	return neighbour
+
+  return neighbour
 \end{lstlisting}
-
-La interfaz de la figura \ref{fig:sfp} simula un vector de 30 elementos en el rango de -10 a 10. Las barras crecen y decrecen según se explore el espacio de búsqueda. 
-
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=\linewidth]{img/sfp}
-	\caption{Sum Function Problem Interface}
-	\label{fig:sfp}
-\end{figure}
 
 \subsection{CEC 2017}
 
+La función \ref{lst:cec-gi} define la función a optimizar, los rangos de valores, el tamaño de la dimensión y la tasa de cambio (ya que la solución es real). Por otro lado, la función \ref{lst:cec-e} calcula la energía del sistema dados los parámetros ya definidos.
+
+La función \ref{lst:cec-gis} genera un vector de la dimensión definida restringida por la información adicional definida, mientras que la función \ref{lst:cec-gn} suma  o resta en \textit{alpha} a un elemento aleatorio del vector.
+
+\begin{lstlisting}[style=pythonstyle, label={lst:cec-gi} ,caption={Función \textit{generateInformation} de CEC 2017}]
+def generateInformation(self, function: callable, low:int, high:int, dimention:int, alpha:int):
+  self.information = {
+	"function": function,
+	"low" : low,
+	"high": high,
+	"dimention": dimention,
+	"alpha": alpha
+  }
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:cec-e} ,caption={Función \textit{objective} de CEC 2017}]
+def objective(self, solution):
+  return - self.information["function"]([solution])[0]
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:cec-gis} ,caption={Función \textit{generateInitialSolution} de CEC 2017}]
+def generateInitialSolution(self):
+  solution = np.random.uniform(low=self.information["low"],
+    high=self.information["high"],
+    size=self.information["dimention"]).tolist()
+
+  return solution
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:cec-gn} ,caption={Función \textit{getRandomNeighbour} de CEC 2017}]
+def getRandomNeighbour(self, solution):
+  neighbour = solution[:]
+  index = random.randint(0, len(solution) - 1)
+  alpha = random.uniform(-self.information["alpha"], self.information["alpha"])
+
+  neighbour[index] += alpha
+  return neighbour
+\end{lstlisting}
+
 \section{Metaheuristic}
+
+De igual manera, el se diseña una clase padre \ref{lst:meta} que implemente algunas de las funciones compatibles entre algoritmo genético, \textit{hill climbing} y \textit{simulated annealing}.
+
+Esta clase tiene como parametro la clase \textit{Problem} y define los métodos abstractos \textit{resetProblem} y \textit{optimize} los cuales reinician meta parámetros y evalúan el algoritmo, respectivamente.
+
+Adicionalmente se definen 3 funciones:
+\begin{itemize}
+	\item \textit{evaluate}: recibe como parámetro una solución y devuelve la aptitud definida por el problema
+	
+	\item \textit{isBetterSolution}: Compara dos soluciones.
+	
+	\item \textit{isSameSolution}: Verifica si dos soluciones tiene  la misma aptitud.
+\end{itemize}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:meta} ,caption={Clase \textit{Metaheuristic}}]
+class Metaheuristic(ABC):
+  def __init__(self, problem: Problem):
+  self.problem = problem
+
+  @abstractmethod
+  def resetProblem(self):
+    self.solution = self.problem.generateInitialSolution()
+    self.is_best = False
+
+  @abstractmethod
+  def optimize(self, *args, **kwargs): pass
+
+  def evaluate(self, state: Any) -> float:
+    return self.problem.objective(state)
+
+  def isBetterSolution(self, solution_1: Any, solution_2: Any)-> bool:
+    return (self.problem.objective(solution_1) > 
+    	self.problem.objective(solution_2)) 
+
+  def isSameSolution(self, solution_1: Any, solution_2: Any) -> bool:
+  return (self.problem.objective(solution_1) ==
+  	  self.problem.objective(solution_2)) 
+
+  def printSolution(self) -> None:
+    print(f'Solution: {self.solution}: {self.evaluate(self.solution)}')
+
+  def getSolution(self) -> Any:
+    return self.solution
+
+  def setSolution(self, solution: Any):
+    self.solution = solution
+\end{lstlisting}
 
 \subsection{Genetic Algorithm}
 
+La clase \textit{GeneticAlgorithm} hereda de la clase \textit{Metaheuristic} e incluye las clases \textit{GASelectionFunctions}, \textit{GACrossoverFunctions}, \textit{GAMutationFunctions} y \textit{GAReplaceFunctions} que se verán mas adelante.
+
+El constructor del código \ref{lst:ga-init} recibe como parametros el problema de optimización y el tamaño de la población. Adicionalmente crea los objetos de las funciones para poder ser accedidas desde esa misma clase y llama la función \ref{lst:ga-rp}, la cual predefine las funciones del algoritmo e inicializa la población.
+
+La función \ref{lst:ga-o} se encarga de encontrar la mejor solución realizando las operaciones de selección, cruza, mutación y reemplazo. Nótese que esta función recibe como parámetro \textit{stationary} de tipo \textit{float} el cual define el tamaño de la población que se mantiene estacionaria y cual evoluciona. A la parte que evoluciona se le aplican las operaciones de selección, cruza y mutación para al final aplicar la operación de reemplazo a la población en general.
+
+Adicionalmente, la función \ref{lst:ga-set} es el \textit{setter} de la función a utilizar, el resto de funciones tienen la misma estructura. Se utiliza \textit{partial} ya que existen funciones que requieren de parámetros adicionales.
+
+\begin{lstlisting}[style=pythonstyle, label={lst:ga-init} ,caption={Constructor  \textit{GeneticAlgorithm}}]
+	class Metaheuristic(ABC):
+def __init__(self, problem, population_size: int = 16):
+  super().__init__(problem)
+  self.population_size = population_size
+  self.selection_functions = Selection
+  self.crossover_functions = Crossover
+  self.mutation_functions = Mutation
+  self.replace_functions = Replace
+  self.resetProblem()
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:ga-rp} ,caption={Función  \textit{resetProblem}}]
+def resetProblem(self):
+super().resetProblem()
+self.population = [self.problem.generateInitialSolution() for _ in range(self.population_size)]
+self.selection = Selection.tournament
+self.crossover = Crossover.onePoint
+self.mutation = Mutation.singlePoint
+self.replace = Replace.random
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:ga-o} ,caption={Función  \textit{optimize}}]
+def optimize(self, epochs: int = 1, stationary: float = 0):
+  for _ in range(epochs):
+    population_sample = random.sample(self.population,self.population_size - int(self.population_size * stationary))
+
+    population_sample = self.selection(population_sample, self.problem.objective)
+    population_sample = self.crossover(population_sample)
+    population_sample = self.mutation(population_sample, self.problem)
+    self.population = self.replace(self.population, population_sample, self.problem.objective) 
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:ga-set} ,caption={Función  \textit{optimize}}]
+def setSelection(self, selection, selection_rate = None):
+  if selection_rate:
+    self.selection = partial(selection, selection_rate = selection_rate)
+  else:
+    self.selection = selection
+\end{lstlisting}
+
 \subsection{Selection functions}
+
+Las funciones de selección reciben como parametros la población de la cual se seleccionan los padres, la función objetivo y retorna el conjunto de individuos de padres de la siguiente generación.
+
+ A conitnuación se muestran tres operadores de selección: 
+ \begin{itemize}
+ 	\item \textit{tournament}. Recibe un parámetro adicional que define la cantidad de individuos que participaran en cada torneo.
+ 	\item \textit{proportional}
+ 	\item \textit{negativeAssortativeMating}. Aunque recibe como parámetro la función objetivo no es requerida, ya que es at función busca emparejar aquellos individuos mas diferentes.
+ \end{itemize}
+ 
+\begin{lstlisting}[style=pythonstyle, label={lst:ga-t} ,caption={Función  \textit{tournament}}]
+@staticmethod
+def tournament(population, objective, selection_rate=0.2):
+  population_size = len(population)
+  parents = []
+
+  for _ in range(population_size):
+    k = max(2, math.ceil(population_size * selection_rate))
+    candidates = random.sample(population, min(k, population_size))
+    scores = [objective(ind) for ind in candidates]
+    best = candidates[scores.index(max(scores))]
+    parents.append(best)
+
+  return parents    
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:ga-p} ,caption={Función  \textit{proportional}}]
+@staticmethod
+def proportional(population, objective):
+  population_size = len(population)
+  parents = []
+
+  objectives = SelectionFunctions._linealDisplacement(population, objective)
+
+  total = sum(objectives)
+  probabilities = [ objective/total for objective in objectives ]
+
+  proportions = [ probabilities[0] ]
+  for i in range(1, len(probabilities)):
+    proportions.append(probabilities[i] + proportions[i - 1])
+
+  for _ in range(population_size):
+    pos = random.random()
+    for i in range(len(proportions)):
+      if (pos <= proportions[i]):
+        parents.append(population[i])
+        break
+
+  return parents
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:ga-nam} ,caption={Función  \textit{negativeAssortativeMating}}]
+@staticmethod
+def negativeAssortativeMating(population, objective):
+  population_size = len(population)
+  parents = []
+
+  for _ in range(int(population_size/2)):
+    individual = random.choice(population)
+    distances = [ SelectionFunctions.distance(individual, test) for test in population ]
+
+    parents.append(individual)
+    parents.append(population[distances.index(max(distances))])
+
+  return parents
+\end{lstlisting}
 
 \subsection{Crossover functions}
 
+A continuación, se muestra la implementación de tres algoritmos de cruza:
+\begin{itemize}
+	\item \textit{onePoint} para soluciones binarias.
+	\item \textit{arithmetic} para soluciones reales.
+	\item \textit{uniformOrderBased} para soluciones de permutación.
+\end{itemize}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:ga-op} ,caption={Función  \textit{onePoint}}]
+def onePoint(population:list):
+  generation:list = []    
+  population_size = len(population)
+  for i in range(0, population_size, 2):
+    parent1 = population[i]
+    parent2 = population[i + 1]
+
+    point:int = random.randint(1, population_size - 1)
+
+    child1 = parent1[:point] + parent2[point:]
+    child2 = parent2[:point] + parent1[point:]
+    generation.extend([child1, child2])
+
+  return generation
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:ga-a} ,caption={Función  \textit{arithmetic}}]
+@staticmethod
+def arithmetic(population: list, crossover_rate: float = None):
+  generation = []
+  population_size = len(population)
+
+  for i in range(0, population_size - 1, 2):
+    parent1 = population[i]
+    parent2 = population[i + 1]
+
+    a = crossover_rate if crossover_rate is not None else random.random()
+
+    child1 = [a * x + (1 - a) * y for x, y in zip(parent1, parent2)]
+    child2 = [(1 - a) * x + a * y for x, y in zip(parent1, parent2)]
+
+    generation.extend([child1, child2])
+
+  return generation
+\end{lstlisting}
+
 \subsection{Mutation functions}
+
+Se utilizo unicamente una función de mutación que busca un vecino inmediato de la solución que se le otorgue dada una probabilidad.
+
+\begin{lstlisting}[style=pythonstyle, label={lst:ga-a} ,caption={Función  \textit{arithmetic}}]
+@staticmethod
+def singlePoint(population:list, problem, mutation_rate: float = 0.2):
+  mutations: list  = []
+  for individual in population:
+    if random.random() <= mutation_rate:
+      mutations.append(problem.getRandomNeighbour(individual))
+    else:
+      mutations.append(individual)
+
+  return mutations
+\end{lstlisting}
 
 \subsection{Replace functions}
 
-\begin{lstlisting}[style=pythonstyle, label={lst:sa} ,caption={Constructor de la clase SimulatedAnnealing}]
-\end{lstlisting}
+
+
