@@ -1,27 +1,15 @@
 import math
 import random
+from Algorithms.functions import distance, linealDisplacement
 
 class SelectionFunctions:
-
-    def _linealDisplacement(population, objective, epsilon = 0.1):
-        objectives = [ objective(individual) for individual in population ]
-        min_objective = min(objectives)
-        objectives = [ objective - min_objective + epsilon for objective in objectives]
-
-        return objectives
-
-    def _distance(solution_1, solution_2):
-        distance = 0
-        for i in range(len(solution_1)):
-            distance += abs(solution_1[i] - solution_2[i])
-        return distance
 
     @staticmethod
     def universalRandom(population, objective):
         population_size = len(population)
         parents=[]
    
-        objectives = SelectionFunctions._linealDisplacement(population, objective)
+        objectives = linealDisplacement(population, objective)
         total = sum(objectives)
         space = total / population_size
         start = random.uniform(0, space)
@@ -56,7 +44,7 @@ class SelectionFunctions:
         population_size = len(population)
         parents = []
         
-        objectives = SelectionFunctions._linealDisplacement(population, objective)
+        objectives = linealDisplacement(population, objective)
         
         total = sum(objectives)
         probabilities = [ objective/total for objective in objectives ]
@@ -81,7 +69,7 @@ class SelectionFunctions:
 
         for _ in range(int(population_size/2)):
             individual = random.choice(population)
-            distances = [ SelectionFunctions.distance(individual, test) for test in population ]
+            distances = [ distance(individual, test) for test in population ]
 
             parents.append(individual)
             parents.append(population[distances.index(max(distances))])

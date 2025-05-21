@@ -28,8 +28,13 @@ class GeneticAlgorithm(Metaheuristic):
         self.replace = Replace.random
 
     def optimize(self, epochs: int = 1, stationary: float = 0):
+        if stationary == 1:
+            return
+        
         for _ in range(epochs):
-            population_sample = random.sample(self.population,self.population_size - int(self.population_size * stationary))
+            population_sample_size = self.population_size - int(self.population_size * stationary)
+            population_sample_size -= population_sample_size % 2  # Asegurar que sea múltiplo de 2
+            population_sample = random.sample(self.population, population_sample_size)
             
             population_sample = self.selection(population_sample, self.problem.objective)
             population_sample = self.crossover(population_sample)
@@ -59,18 +64,22 @@ class GeneticAlgorithm(Metaheuristic):
         else:
             self.mutation = mutation
 
-    def setReplace(self, replace):
-        self.replace = replace
+    def setReplace(self, replace, replace_rate = None):
+        if replace_rate:
+            self.replace = partial(replace,replace_rate =replace_rate)
+        else:
+            self.replace = replace
 
     # Display
     def printConfiguration(self):
         selection_name = self.selection.func.__name__ if hasattr(self.selection, 'func') else self.selection.__name__
         crossover_name = self.crossover.func.__name__ if hasattr(self.crossover, 'func') else self.crossover.__name__
         mutation_name = self.mutation.func.__name__ if hasattr(self.mutation, 'func') else self.mutation.__name__
+        replace_name = self.replace.func.__name__ if hasattr(self.replace, 'func') else self.replace.__name__
 
         print("=== Configuration ===")
         print(f"Selection: {selection_name}")
         print(f"Crossover: {crossover_name}")
         print(f"Mutatation: {mutation_name}")
-        print(f"Replace: {self.replace.__name__}")
+        print(f"Replace: {replace_name}")
         print(f"Population size: {self.population_size}\n")

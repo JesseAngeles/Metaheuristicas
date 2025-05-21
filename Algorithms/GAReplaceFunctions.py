@@ -1,4 +1,5 @@
 import random
+from Algorithms.functions import distance
 
 class ReplaceFunctions:
     @staticmethod
@@ -24,43 +25,45 @@ class ReplaceFunctions:
         survivors += replace
 
         return survivors
-
-    # todo Corregir
+        
     @staticmethod
     def deterministCrowding(population: list, replace: list, objective):
         new_population = []
 
-        for i in range(0, len(replace), 2):
-            # Emparejar hijos con sus padres más cercanos
-            parent1 = population[i]
-            parent2 = population[i+1]
-            child1 = replace[i]
-            child2 = replace[i+1]
+        # Truncar al tamaño mínimo par común
+        pair_count = min(len(population), len(replace))
+        pair_count -= pair_count % 2  # asegurar número par
 
-            # # Comparar distancias
-            # if distance(child1, parent1) + distance(child2, parent2) < distance(child1, parent2) + distance(child2, parent1):
-            #     pairings = [(parent1, child1), (parent2, child2)]
-            # else:
-            #     pairings = [(parent1, child2), (parent2, child1)]
+        for i in range(0, pair_count, 2):
+            # Obtener pares de padres e hijos
+            p1, p2 = population[i], population[i + 1]
+            o1, o2 = replace[i], replace[i + 1]
 
-            # for parent, child in pairings:
-            #     if objective(child) >= objective(parent):
-            #         new_population.append(child)
-            #     else:
-            #         new_population.append(parent)
+            # Determinar emparejamiento por similitud
+            if distance(p1, o1) + distance(p2, o2) <= distance(p1, o2) + distance(p2, o1):
+                winner1 = o1 if objective(o1) > objective(p1) else p1
+                winner2 = o2 if objective(o2) > objective(p2) else p2
+            else:
+                winner1 = o2 if objective(o2) > objective(p1) else p1
+                winner2 = o1 if objective(o1) > objective(p2) else p2
 
-        return population
+            new_population.extend([winner1, winner2])
 
-    # todo Corregir
+        return new_population
+    
     @staticmethod
-    def restrictedTournament(population: list, replace: list, objective):
+    def restrictedTournament(population: list, replace: list, objective, replace_rate: int = 5):
         survivors = population.copy()
 
-        # for child in replace:
-        #     # Buscar el más cercano
-        #     closest = min(survivors, key=lambda p: distance(p, child))
-        #     if objective(child) > objective(closest):
-        #         survivors.remove(closest)
-        #         survivors.append(child)
+        for child in replace:
+            # Seleccionar una ventana aleatoria de la población actual
+            window = random.sample(survivors, min(replace_rate, len(survivors)))
 
-        return population
+            # Buscar el individuo más cercano en la ventana
+            closest = min(window, key=lambda p: distance(p, child))
+
+            # Reemplazar si el hijo tiene mejor aptitud
+            if objective(child) > objective(closest):
+                survivors[survivors.index(closest)] = child
+
+        return survivors

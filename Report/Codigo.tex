@@ -445,6 +445,39 @@ def arithmetic(population: list, crossover_rate: float = None):
   return generation
 \end{lstlisting}
 
+\begin{lstlisting}[style=pythonstyle, label={lst:ga-a} ,caption={Función  \textit{uniformOrderBased}}]
+@staticmethod
+def uniformOrderBased(population: list):
+  generation = []
+  population_size = len(population)
+
+  for i in range(0, population_size - 1, 2):
+    parent1 = population[i]
+    parent2 = population[i + 1]
+    size = len(parent1)
+
+    mask = [random.randint(0, 1) for _ in range(size)]
+
+    def create_child(p1, p2):
+	  child = [None] * size
+	  for j in range(size):
+	    if mask[j] == 1:
+		  child[j] = p1[j]
+	  fill = [gene for gene in p2 if gene not in child]
+	  k = 0
+	  for j in range(size):
+		if child[j] is None:
+		  child[j] = fill[k]
+	  	  k += 1
+	  return child
+
+	child1 = create_child(parent1, parent2)
+	child2 = create_child(parent2, parent1)
+	generation.extend([child1, child2])
+
+  return generation
+\end{lstlisting}
+
 \subsection{Mutation functions}
 
 Se utilizo unicamente una función de mutación que busca un vecino inmediato de la solución que se le otorgue dada una probabilidad.
@@ -463,6 +496,94 @@ def singlePoint(population:list, problem, mutation_rate: float = 0.2):
 \end{lstlisting}
 
 \subsection{Replace functions}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:ga-a} ,caption={Función  \textit{elitism}}]
+@staticmethod
+def elitism(population: list, replace: list, objective):
+  population_size = len(population)
+  replace_size = len(replace)
+
+  # Ordenar poblacion por fitness
+  sorted_population = sorted(population, key=objective, reverse=True)
+
+  # Conservar los mejores
+  survivors = sorted_population[:population_size - replace_size]
+  survivors += replace
+
+  return survivors
+\end{lstlisting}
+
+
+\begin{lstlisting}[style=pythonstyle, label={lst:ga-a} ,caption={Función  \textit{deterministCrowding}}]
+@staticmethod
+def deterministCrowding(population: list, replace: list, objective):
+  new_population = []
+  for i in range(0, len(population), 2):
+    p1, p2 = population[i], population[i + 1]
+    o1, o2 = replace[i], replace[i + 1]
+
+	if distance(p1, o1) + distance(p2, o2) <= distance(p1, o2) + distance(p2, o1):
+	  winner1 = o1 if objective(o1) > objective(p1) else p1
+	  winner2 = o2 if objective(o2) > objective(p2) else p2
+	else:
+	  winner1 = o2 if objective(o2) > objective(p1) else p1
+	  winner2 = o1 if objective(o1) > objective(p2) else p2
+
+  	new_population.extend([winner1, winner2])
+
+  return new_population
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:ga-a} ,caption={Función  \textit{restrictedTournament}}]
+@staticmethod
+def restrictedTournament(population: list, replace: list, objective, selection_rate: int = 5):
+  survivors = population.copy()
+
+  for child in replace:
+	window = random.sample(survivors, min(selection_rate, len(survivors)))
+
+	closest = min(window, key=lambda p: distance(p, child))
+	if objective(child) > objective(closest):
+	  survivors[survivors.index(closest)] = child
+
+return survivors
+\end{lstlisting}
+
+\section{Pruebas de aptitud}
+
+El código a continuación se encarga de realizar pruebas para cada cada combinación de los diferentes de los diferentes algoritmos y para diferentes porcentajes de población estacionaria. Se obtienen los valores de mejor y peor valor, media de función objetivo y desviación estándar de los valores obtenidos. Esto con el objetivo de comprar los resultados y determinar las condiciones para la optimización de un problema.
+
+\begin{lstlisting}[style=pythonstyle, label={lst:ga-a} ,caption={Código de pruebas }]
+for problem_name, problem in problems.items():
+g = GeneticAlgorithm(problem)
+
+for sel_name, sel_func in selection.items():
+ for cross_name, cross_func in crossover_set.items():
+   for mut_name, mut_func in mutation.items():
+     for rep_name, rep_func in replace.items():
+       scores = []
+       for stationary in np.arange(0, 1.01, 0.1):
+
+	     for _ in range(iterations): 
+		  g.resetProblem()
+		  g.setSelection(sel_func(g))
+		  g.setCrossover(cross_func(g))
+		  g.setMutation(mut_func(g))
+		  g.setReplace(rep_func(g))
+		  g.optimize(epochs, stationary)
+		  score = g.bestIndividual()
+		  scores.append(score)
+
+ 	   best = max(scores)
+	   worst = min(scores)
+	   mean = statistics.mean(scores)
+	   stddev = statistics.stdev(scores) if len(scores) > 1 else 0.0
+
+	  writer.writerow([
+	    problem_name, round(stationary,1), sel_name, cross_name, mut_name, rep_name,
+	    best, worst, mean, stddev
+	  ])
+\end{lstlisting}
 
 
 

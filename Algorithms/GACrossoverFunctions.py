@@ -8,7 +8,6 @@ class CrossoverFunctions:
         for i in range(0, population_size, 2):
             parent1 = population[i]
             parent2 = population[i + 1]
-            length = len(parent1)
             
             point:int = random.randint(1, population_size - 1)
 
@@ -146,7 +145,6 @@ class CrossoverFunctions:
 
         return generation
 
-    # TODO Corregir
     @staticmethod
     def uniformOrderBased(population: list):
         generation = []
@@ -178,7 +176,6 @@ class CrossoverFunctions:
 
         return generation
 
-    # TODO Corregir
     @staticmethod
     def orderBased(population: list):
         generation = []
