@@ -21,7 +21,7 @@ class SumFunctionProblem(Problem):
             if abs(val) > 1e100:  # Puedes ajustar este umbral
                 return float("inf")
             total_sum += val ** 2
-        return total_sum
+        return -total_sum
 
     def generateInitialSolution(self):
         solution = [random.randint(self.information['min'], self.information['max']) for _ in range(self.information['size'])]
