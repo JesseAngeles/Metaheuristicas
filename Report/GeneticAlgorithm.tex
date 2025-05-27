@@ -119,6 +119,14 @@
 	\chapter*{Introducción}
 	\addcontentsline{toc}{chapter}{Introducción}
 	
+	Los algoritmos genéticos (AG) son una técnica de optimización inspirada en los mecanismos de la evolución natural, como la selección natural, la reproducción y la mutación. Desde su origen, han sido ampliamente utilizados para resolver problemas complejos en áreas donde las soluciones exactas son difíciles de encontrar mediante métodos tradicionales \cite{gas}.
+	
+	El objetivo principal de esta práctica es comprender el funcionamiento de los algoritmos genéticos y analizar el impacto que tienen sus operadores fundamentales: selección, cruza, mutación y reemplazo. Cada uno de estos pasos representa una fase clave del proceso evolutivo artificial, y su correcta implementación y configuración puede mejorar significativamente el rendimiento del algoritmo.
+	
+	Se busca experimentar variando combinaciones de operadores y niveles de estacionariedad, con el fin de observar su influencia en la calidad de las soluciones obtenidas.
+	
+	Esta exploración permite no solo afianzar los conceptos teóricos detrás de los algoritmos genéticos, sino también desarrollar un criterio práctico para seleccionar y configurar sus componentes de manera adecuada según el tipo de problema abordado.
+	
 	\input{Algoritmo genetico}
 	\input{Seleccion}
 	\input{Cruza}
@@ -130,6 +138,16 @@
 	
 	\chapter*{Conclusión}
 	\addcontentsline{toc}{chapter}{Conclusión}
+	
+	En esta práctica se exploró el funcionamiento y comportamiento de los algoritmos genéticos (AG), una técnica de búsqueda inspirada en los principios de la evolución natural. El enfoque se centró en los cuatro operadores fundamentales del AG: selección, cruza, mutación y reemplazo. Se implementaron diferentes variantes de cada uno para evaluar su influencia en la calidad de la solución en distintos tipos de problemas: mochila, viajero y funciones de suma.
+	
+	Durante la fase de selección, se analizaron estrategias como el torneo, la selección proporcional y la selección universal aleatoria, observando cómo cada una impacta la presión selectiva del algoritmo. En la etapa de cruza, se utilizaron métodos específicos para individuos binarios, reales y permutacionales, destacando el rol que juega la combinación genética en la exploración del espacio de soluciones. La mutación, aunque aplicada con baja probabilidad, se mostró esencial para mantener la diversidad genética y evitar convergencia prematura. Finalmente, se compararon políticas de reemplazo como elitismo, reemplazo aleatorio y técnicas más sofisticadas como \textit{crowding}, que buscan preservar la diversidad poblacional.
+	
+	Los resultados experimentales permitieron contrastar combinaciones de operadores bajo distintas configuraciones y niveles de estacionariedad. Se evidenció que la eficiencia del algoritmo depende fuertemente de la interacción entre los operadores, así como del tipo de problema abordado. Por ejemplo, para problemas de tipo permutacional como el TSP, ciertos operadores de cruza demostraron ser más efectivos que otros.
+	
+	En conclusión, los algoritmos genéticos ofrecen una solución robusta y flexible a problemas complejos de optimización, pero su rendimiento depende críticamente de la adecuada elección e interacción de sus operadores. Esta práctica permitió no solo comprender sus fundamentos teóricos, sino también observar en la práctica su comportamiento y sensibilidad a los parámetros de diseño.
+	
+	
 	
 	% Referencias
 	\clearpage

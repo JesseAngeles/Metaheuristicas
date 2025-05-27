@@ -14,13 +14,14 @@ class SumFunctionProblem(Problem):
             "max": max
         }
 
-    def objective(self, solution):
-        total_sum:float = 0
-        
-        for val in solution:
-            total_sum += val**2
-    
-        return -total_sum
+    def objective(self, individual):
+        total_sum = 0
+        for val in individual:
+            # Previene valores desbordados
+            if abs(val) > 1e100:  # Puedes ajustar este umbral
+                return float("inf")
+            total_sum += val ** 2
+        return total_sum
 
     def generateInitialSolution(self):
         solution = [random.randint(self.information['min'], self.information['max']) for _ in range(self.information['size'])]
