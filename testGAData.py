@@ -15,7 +15,7 @@ for problema in problemas:
         continue
 
     # Encontrar la fila con el mejor 'BestScore'
-    mejor_fila = df_problema.loc[df_problema["BestScore"].idxmax()]
+    mejor_fila = df_problema.loc[df_problema["StdDev"].idxmin()]
 
     print(f"\n Mejor configuración para {problema}:")
     print(f"  - Stationary: {mejor_fila['Stationary']}")

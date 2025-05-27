@@ -1,46 +1,61 @@
+import numpy as np
+import pandas as pd
 import time
-import csv
-from Problems.Cec20171 import Cec2017
-from Problems.cec2017.cec2017.simple import *
-from Algorithms.SimulatedAnnealing1 import SimulatedAnnealing
 
-functions = { f1, f2, f3, f4, f5, f6, f7, f8, f9, f10 }
+from Algorithms.GeneticAlgorithm import GeneticAlgorithm
+from Problems.Cec2017 import Cec2017
+from Problems.cec2017.cec2017.functions import all_functions
 
-dataset = []
+# Datasets separados
+results_dataset = []
+time_dataset = []
 
-for function in functions:
-    cec_problem = Cec2017()
-    dimension = 5
-    cec_problem.generate_information(function, -100, 100, 100, dimension)
+# Iterar sobre funciones
+for i in range(11):
+    dimension = 100
+    function = all_functions[i]
 
-    sa = SimulatedAnnealing(cec_problem.information, 
-                            cec_problem.energy, 
-                            cec_problem.generate_initial_solution, 
-                            cec_problem.random_neighbour)
+    cec = Cec2017(function=function, dimention=dimension)
+    ga = GeneticAlgorithm(cec, 32)
 
-    for i in range(100):
-        sa.reset()
+    solutions = []
+    times = []
 
-        start_time = time.time()
-        while sa.temperature > sa.min_temperature:
-            sa.stepSimpleSimulatedAnnealing()
-        elapsed_time = time.time() - start_time
+    for _ in range(20):
+        ga.resetProblem()
+        start = time.time()
+        ga.optimize(100)
+        end = time.time()
 
-        record = {
-            "function": function.__name__,
-            "energy": sa.energy,
-            "time_seconds": elapsed_time,
-            "dimension": dimension
-        }
+        times.append(end - start)
+        solutions.append(float(ga.bestIndividual()))
 
-        dataset.append(record)
+    # Resultados de la función
+    results_dataset.append({
+        "function_id": i + 1,
+        "best": np.min(solutions),
+        "worst": np.max(solutions),
+        "mean": np.mean(solutions),
+        "median": np.median(solutions),
+        "std_dev": np.std(solutions)
+    })
 
-        print(f"[{i+1}/100] Energy: {sa.energy:.4f}, Time: {elapsed_time:.4f}s, Function {function.__name__}")
+    # Estadísticas de tiempos
+    time_dataset.append({
+        "function_id": i + 1,
+        "min_time_sec": np.min(times),
+        "max_time_sec": np.max(times),
+        "mean_time_sec": np.mean(times),
+        "median_time_sec": np.median(times),
+        "std_time_sec": np.std(times)
+    })
 
-# Guardar en un archivo CSV
-with open("simulated_annealing_results.csv", "w", newline="") as f:
-    writer = csv.DictWriter(f, fieldnames=["function", "energy", "time_seconds", "dimension"])
-    writer.writeheader()
-    writer.writerows(dataset)
+# Guardar archivos
+pd.DataFrame(results_dataset).to_csv("Resultados_GA_CEC2017.csv", index=False)
+pd.DataFrame(time_dataset).to_csv("Tiempo_Ejecucion_GA_CEC2017.csv", index=False)
 
-print("\nResultados guardados en 'simulated_annealing_results.csv'")
+# Mostrar en consola
+print("=== Resultados ===")
+print(pd.DataFrame(results_dataset))
+print("\n=== Estadísticas de Tiempos ===")
+print(pd.DataFrame(time_dataset))

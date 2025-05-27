@@ -1,19 +1,80 @@
 \chapter{Resultados}
 
-En las imágenes a continuación se muestran los resultados con las mejores combinaciones para los problemas de \textit{Knapsack problem} y \textit{Travel Salesman Problem}.
+A continuación, se muestran las mejores combinaciones para cada uno de los tres problemas: \textit{knapsack problem}, \textit{travel salesman problem} y \textit{sum function problem}. Se realizaron 100 entrenamientos diferentes con 1000 épocas cada uno. 
 
-Para 50 elementos en la mochila y con un entrenamiento de 100 épocas, el mejor puntaje se obtiene con las funciones de la figura \ref{fig:r1}. Resulta curioso que el algoritmo con mejor desempeño para la selección es aquel encargado de explorar y no de mejorar.
+\section{Knapsack problem}
 
-\begin{figure}[H]
+Considerando 50 elementos en la mochila, una capacidad máxima de 50, los mejores resultados se obtienen con las configuraciones de la tabla \ref{tab:res_ksp}.
+
+\begin{table}[h!]
 	\centering
-	\includegraphics[width=0.45\linewidth]{img/r1.png}
-	\label{fig:r1}
-\end{figure}
+	\begin{tabular}{|p{0.15\textwidth}|p{0.16\textwidth}|p{0.16\textwidth}|p{0.16\textwidth}|p{0.16\textwidth}|}
+		\hline
+		\textbf{Mejor} & \textbf{\textit{best}} & \textbf{\textit{worst}} & \textbf{\textit{mean}} & \textbf{\textit{std dev}}  \\ \hline
+		Estacionaria & $0.1$ & $0.2$ & 0.7 & 0.9 \\ 
+		
+		Selección & \textit{Negative assortative} & \textit{Universal random} & \textit{Negative assortative} & \textit{Universal random} \\
+		
+		Cruza & \textit{Two point} & \textit{Uniform} &  \textit{Uniform}& \textit{One point}\\
+		
+		Remplazo & \textit{Restricted tournament} & \textit{Restricted tournament} & \textit{Restricted tournament} & \textit{Determinist crowding}\\ \hline
+		
+		\textit{best score} & 189 & 159 & 166 & 86 \\
+		
+		\textit{worst score} & 78  & 98 & 88 & 27\\
+		
+		\textit{mean score} & 123 & 123.82& 124.93& 58.27 \\
+		
+		\textit{std dev} & 17.4272 & 14.0471 & 14.0081 & 11.4379  \\ \hline
+		
+	\end{tabular}
+	\caption{Mejores configuraciones de funciones para \textit{knapsack problem}}
+	\label{tab:res_ksp}
+\end{table}
 
-Por otro lado, para un grafo con 50 ciudades mediante funciones de uniformidad generan el mejor resultado pero con una desviación estándar mucho mayor, lo que puede dificultar la búsqueda del óptimo global.
+\section{Travel salesman problem}
 
-\begin{figure}[H]
+Considerando 50 ciudades interconectadas,  los mejores resultados se obtienen con las configuraciones de la tabla \ref{tab:res_tsp}.
+
+\begin{table}[h!]
 	\centering
-	\includegraphics[width=0.45\linewidth]{img/r2}
-	\label{fig:r2}
-\end{figure}
+	\begin{tabular}{|p{0.15\textwidth}|p{0.16\textwidth}|p{0.16\textwidth}|p{0.16\textwidth}|p{0.16\textwidth}|}
+		\hline
+		\textbf{Mejor} & \textbf{\textit{best}} & \textbf{\textit{worst}} & \textbf{\textit{mean}} & \textbf{\textit{std dev}}  \\ \hline
+		Estacionaria & 0.0 & 0.0 & 0.0 & 0.0 \\
+		Selección & \textit{Universal random} &\textit{Tournament}  & \textit{Universal random}  & \textit{Tournament}\\
+		Cruza & \textit{Uniform order based}&  \textit{Uniform order based} &  \textit{Order based} & \textit{Uniform order based} \\
+		Remplazo & \textit{Determinist crowding} &  \textit{Determinist crowding} &  \textit{Determinist crowding}  & \textit{Elitism} \\ \hline
+		\textit{best score}& -449 & -510 & -514 &  -526\\
+		\textit{worst score}& -834 & -758 & -764 & -799 \\
+		\textit{mean score}& -657 & -652.71 & -647.09 & -666.51 \\
+		\textit{std dev}& 65.0414 & 54.5731 & 56.1351 & 52.6121 \\ \hline
+	\end{tabular}
+	\caption{Mejores configuraciones de funciones para \textit{travel salesman problem}}
+	\label{tab:res_tsp}
+\end{table}
+
+\section{Sum function problem}
+
+Considerando 50 elementos en unrango de $[-5,5]$, los mejores resultados se obtienen con las configuraciones de la tabla \ref{tab:res_sfp}.
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{|p{0.15\textwidth}|p{0.16\textwidth}|p{0.16\textwidth}|p{0.16\textwidth}|p{0.16\textwidth}|}
+		\hline
+			\textbf{Mejor} & \textbf{\textit{best}} & \textbf{\textit{worst}} & \textbf{\textit{mean}} & \textbf{\textit{std dev}}  \\ \hline
+		Estacionaria & 0.3 & 0.1 & 0.1 & 0.1 \\
+		Selección & \textit{Negative assortative} & \textit{Universal random} & \textit{Universal random}& \textit{Universal random} \\
+		Cruza & \textit{Blend} & \textit{Blend} & \textit{Blend} &\textit{Blend} \\
+		Remplazo & \textit{Restricted tournament} & \textit{Elitism} & \textit{Elitism} &\textit{Elitism} \\ \hline
+		\textit{best score}& 0.0 & -0.0053 & -0.0053 & -0.0053 \\
+		\textit{worst score}& -0.4131 & -0.0616 & -0.0616 & -0.0616 \\
+		\textit{mean score}& -0.0440 & -0.0186 & -0.0186 &-0.0186 \\
+		\textit{std dev}& 0.0636 & 0.0091 & 0.0091 &0.0091  \\ \hline
+	\end{tabular}
+	\caption{Mejores configuraciones de funciones para \textit{sum function problem}}
+	\label{tab:res_sfp}
+\end{table}
+
+\section{CEC 2017}
+

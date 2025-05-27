@@ -27,11 +27,16 @@ class GeneticAlgorithm(Metaheuristic):
         self.mutation = Mutation.singlePoint
         self.replace = Replace.random
 
-    def optimize(self, epochs: int = 1, stationary: float = 0):
+    def optimize(self, epochs: int = 1, stationary: float = 0, alpha: float = 0.0):
         if stationary == 1:
             return
-        
-        for _ in range(epochs):
+    
+        i = 0
+        while i < epochs:
+            i += 1
+
+            best = self.bestIndividual() * (1 + alpha)
+
             population_sample_size = self.population_size - int(self.population_size * stationary)
             population_sample_size -= population_sample_size % 2  # Asegurar que sea múltiplo de 2
             population_sample = random.sample(self.population, population_sample_size)
@@ -40,7 +45,11 @@ class GeneticAlgorithm(Metaheuristic):
             population_sample = self.crossover(population_sample)
             population_sample = self.mutation(population_sample, self.problem)
             self.population = self.replace(self.population, population_sample, self.problem.objective) 
-        
+
+            if(best > self.bestIndividual() and i == epochs):
+                i -= 1
+
+
     def bestIndividual(self):
         objectives = [self.problem.objective(individual) for individual in self.population]
         return max(objectives)
