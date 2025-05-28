@@ -2,7 +2,9 @@
 
 A continuación, se muestran las mejores combinaciones para cada uno de los tres problemas: \textit{knapsack problem}, \textit{travel salesman problem} y \textit{sum function problem}. Se realizaron 100 entrenamientos diferentes con 1000 épocas cada uno. 
 
-\section{Knapsack problem}
+\section{Problemas}
+
+\subsection{Knapsack problem}
 
 Considerando 50 elementos en la mochila, una capacidad máxima de 50, los mejores resultados se obtienen con las configuraciones de la tabla \ref{tab:res_ksp}.
 
@@ -32,7 +34,7 @@ Considerando 50 elementos en la mochila, una capacidad máxima de 50, los mejore
 	\label{tab:res_ksp}
 \end{table}
 
-\section{Travel salesman problem}
+\subsection{Travel salesman problem}
 
 Considerando 50 ciudades interconectadas,  los mejores resultados se obtienen con las configuraciones de la tabla \ref{tab:res_tsp}.
 
@@ -54,7 +56,7 @@ Considerando 50 ciudades interconectadas,  los mejores resultados se obtienen co
 	\label{tab:res_tsp}
 \end{table}
 
-\section{Sum function problem}
+\subsection{Sum function problem}
 
 Considerando 50 elementos en unrango de $[-5,5]$, los mejores resultados se obtienen con las configuraciones de la tabla \ref{tab:res_sfp}.
 
@@ -76,5 +78,95 @@ Considerando 50 elementos en unrango de $[-5,5]$, los mejores resultados se obti
 	\label{tab:res_sfp}
 \end{table}
 
-\section{CEC 2017}
+\subsection{CEC 2017}
+
+Dada la complejidad de lo problemas y el tiempo computacional, se realizaron 100 entrenamientos con 100 épocas cada uno. Las mejores configuraciones para cada problema se encuentra en la tabla \ref{tab:res_cec}.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|p{0.05\textwidth}| p{0.05\textwidth}| p{0.16\textwidth} |p{0.15\textwidth}|p{0.15\textwidth}| p{0.2\textwidth} |}
+		\hline
+	 \textbf{\textit{F}}	& \textbf{\textit{E}} & \textbf{Selección} & \textbf{Cruza} & \textbf{Remplazo} & \textbf{\textit{best score}}\\ \hline
+		\textit{f1} & 0.0 & Universal random & Blend & Restricted tournament & -4.7280e+11 \\ 
+		\textit{f2} & 0.0 & Proportional & Blend & Determinist crowding  & -1.8426e+76 \\ 
+		\textit{f3} & 0.6 & Tournament & Arithmetic & Restricted tournament & -320590.8891 \\ 
+		\textit{f4} & 0.0 & Proportional & Blend & Determinist crowding & -6689.5163 \\ 
+		\textit{f5} & 0.0 & Proportional & Blend & Determinist crowding & -1412.8832 \\ 
+		\textit{f6} & 0.0 & Proportional & Blend & Determinist crowding & -665.9885 \\ 
+		\textit{f7} & 0.0 & Proportional & Blend & Restricted tournament & -2612.2007 \\ 
+		\textit{f8} & 0.0 & Proportional & Blend & Determinist crowding & -1862.7245 \\ 
+		\textit{f9} & 0.2 & Proportional & Blend & Determinist crowding & -39105.1820 \\ 
+		\textit{f10} & 0.0 & Universal random  & Blend & Elitism & -20861.8592 \\ \hline
+	\end{tabular}
+	\caption{Mejores configuraciones de funciones para los problemas del \textit{cec 2017}}
+	\label{tab:res_cec}
+\end{table}
+
+
+Ahora, dada la mejor configuración para cada problema, se realizan las pruebas para obtener los resultados y los tiempos de ejecución en las tabla \ref{tab:res_cec_res} y \ref{tab:res_cec_time}.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|p{2.1cm}|}  
+		\hline
+		\textbf{f(x)} & \textbf{Peor} & \textbf{Mejor} & \textbf{Promedio} & \textbf{Mediana} & \textbf{Desviación estándar} \\  
+		\hline
+		f1  & \(-3.92e{12}\) & \(-5.67e{12}\) & \(-5.00e{12}\) & \(-5.11e{12}\) & \(4.53e{11}\) \\ 
+		f2  & \(-8.71e{175}\) & \(-2.62e{191}\) & \(-1.98e{190}\) & \(-4.65e{183}\) & \(\infty\) \\ 
+		f3  & \(-6.53e{5}\) & \(-1.21e{6}\) & \(-9.24e{5}\) & \(-9.39e{5}\) & \(1.43e{5}\) \\ 
+		f4  & \(-1.28e{5}\) & \(-2.80e{5}\) & \(-2.22e{5}\) & \(-2.30e{5}\) & \(3.88e{4}\) \\ 
+		f5  & \(-2.48e{3}\) & \(-2.88e{3}\) & \(-2.71e{3}\) & \(-2.70e{3}\) & \(1.01e{2}\) \\ 
+		f6  & \(-7.34e{2}\) & \(-7.76e{2}\) & \(-7.51e{2}\) & \(-7.50e{2}\) & \(1.05e{1}\) \\ 
+		f7  & \(-1.01e{4}\) & \(-1.25e{4}\) & \(-1.14e{4}\) & \(-1.15e{4}\) & \(6.89e{2}\) \\ 
+		f8  & \(-2.94e{3}\) & \(-3.45e{3}\) & \(-3.10e{3}\) & \(-3.10e{3}\) & \(1.17e{2}\) \\ 
+		f9  & \(-7.03e{4}\) & \(-1.20e{5}\) & \(-8.76e{4}\) & \(-8.56e{4}\) & \(1.13e{4}\) \\ 
+		f10 & \(-2.98e{4}\) & \(-3.33e{4}\) & \(-3.12e{4}\) & \(-3.11e{4}\) & \(8.43e{2}\) \\
+		\hline
+	\end{tabular}
+	\caption{Estadísticas de energía por función.}
+	\label{tab:res_cec_res}
+\end{table}
+
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|p{2.1cm}|}  
+		\hline
+		\textbf{f(x)} & \textbf{Peor} & \textbf{Mejor} & \textbf{Promedio} & \textbf{Mediana} & \textbf{Desviación estándar} \\  
+		\hline
+		f1  & 0.294 & 0.274 & 0.282 & 0.281 & 0.0053 \\ 
+		f2  & 0.345 & 0.317 & 0.328 & 0.327 & 0.0076 \\ 
+		f3  & 0.380 & 0.368 & 0.374 & 0.373 & 0.0039 \\ 
+		f4  & 0.337 & 0.330 & 0.334 & 0.335 & 0.0021 \\ 
+		f5  & 0.328 & 0.314 & 0.317 & 0.316 & 0.0029 \\ 
+		f6  & 0.426 & 0.392 & 0.398 & 0.394 & 0.0083 \\ 
+		f7  & 0.568 & 0.561 & 0.564 & 0.564 & 0.0020 \\ 
+		f8  & 0.417 & 0.395 & 0.399 & 0.397 & 0.0048 \\ 
+		f9  & 0.493 & 0.473 & 0.475 & 0.473 & 0.0044 \\ 
+		f10 & 0.583 & 0.566 & 0.571 & 0.570 & 0.0045 \\
+		\hline
+	\end{tabular}
+	\caption{Estadísticas de tiempo de ejecución por función.}
+	\label{tab:res_cec_time}
+\end{table}
+
+\section{Discusión}
+
+Para los problemas de \textit{knapsack problem}, \textit{travel salesman problem} y \textit{sum function problem} las funciones de \textit{negative assortative mating} y \textit{universal random} tuvieron un desempeño superior sobre el resto de funciones por lo que podemos inferir que la exploración es un factor importante, pero debe de ir acompañada con un reemplazo selectivo para mejorar la búsqueda de óptimos.
+
+Ademas, que entre las funciones se hayan obtenido funciones diferentes es indicativo que cada problema puede ser resuelto mediante diferentes configuraciones pero que a su vez, existen ciertas configuraciones con un mejor desempeño. Un ejemplo son los resultados de \textit{sum function problem}, donde el mejor resultado de \textit{worst, mean y std dev} son la misma configuración, sin embargo, no son quienes obtienen el mejor resultado.
+
+Finalmente, para los problemas de \textit{cec 2017} se observa que las funciones con mejores resultados son \textit{proportional} para la selección, \textit{blend} para cruza y \textit{restricted tournament} y \textit{determinist crowding} para reemplazo. Los tiempos de ejecución de la tabla \ref{tab:res_cec_time} no difieren mucho en el peor y mejor tiempo debido a que, a diferencia de \textit{simulated annealing} o \textit{hill climbing}, este algoritmo no tiene una condición de parada. Para esto, se proporciona un valor \textit{alpha} que define la tasa de mejora necesaria para seguir buscando una solución.
+
+% Comparación general (en texto dentro del documento)
+\subsection{Métodos de Trayectoria Simple}
+
+La comparación entre los tres métodos de trayectoria simple: \textit{Hill Climbing} (tablas \ref{tab:res_hc} y \ref{tab:time_hc}), \textit{Simulated Annealing} (tablas \ref{tab:res_sa} y \ref{tab:time_sa}) y el método base mostrado en las Tablas \ref{tab:res_cec_res} y \ref{tab:res_cec_time}, arroja las siguientes observaciones:
+
+\begin{itemize}
+	\item En términos de calidad de soluciones, el método base supera significativamente a HC y SA en la mayoría de las funciones.
+	\item En cuanto a tiempo de ejecución, el método base es considerablemente más lento que HC y SA, debido al tamaño de la población.
+\end{itemize}
+
+El método base es superior en eficiencia y calidad de resultados. Sin embargo, HC puede ser útil donde se espera evitar grandes órdenes de magnitud de error, y SA podría mejorar si se ajustan correctamente sus parámetros de enfriamiento.
 

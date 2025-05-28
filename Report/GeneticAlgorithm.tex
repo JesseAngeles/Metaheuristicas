@@ -136,6 +136,7 @@
 	\input{Codigo}
 	\input{Resultados}
 	
+
 	\chapter*{Conclusión}
 	\addcontentsline{toc}{chapter}{Conclusión}
 	
@@ -154,5 +155,108 @@
 	\addcontentsline{toc}{chapter}{Referencias}
 	\bibliographystyle{IEEEtran}
 	\bibliography{referencias_GA}
+	
+	\clearpage
+	\chapter{Anexos}
+	
+	\section{Hill climbing}
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|c|c|c|c|c|p{2.1cm}|}  
+			\hline
+			\textbf{f(x)} & \textbf{Peor} & \textbf{Mejor} & \textbf{Promedio} & \textbf{Mediana} & \textbf{Desviación estándar} \\  
+			\hline
+			f1  & -1.4336e+12 & -2.1804e+11 & -6.3137e+11 & -6.0096e+11 & 0.4964 \\
+			f2  & -8.82e+236  & -2.27e+165  & -4.41e+235  & -4.42e+212  & 48.0865 \\
+			f3  & -1.0953e+6  & -7.1786e+5  & -9.3153e+5  & -9.3192e+5  & 0.0963 \\
+			f4  & -1620.66     & -588.09     & -799.38     & -731.21     & 0.2302 \\
+			f5  & -3327.35     & -1840.57    & -2757.48    & -2785.81    & 0.1245 \\
+			f6  & -742.87      & -713.81     & -728.13     & -729.15     & 0.0101 \\
+			f7  & -18239.97    & -13219.15   & -15362.38   & -15198.37   & 0.0883 \\
+			f8  & -3694.17     & -2613.38    & -3257.37    & -3306.11    & 0.0894 \\
+			f9  & -122972.20   & -64916.02   & -90212.80   & -89889.81   & 0.1456 \\
+			f10 & -22817.03    & -16102.13   & -19675.01   & -19759.43   & 0.0890 \\
+			\hline
+		\end{tabular}
+		\caption{Estadísticas de resultados de las funciones (\textit{Hill climbing}).}
+		\label{tab:res_hc}
+	\end{table}
+	
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|c|c|c|c|c|p{2.1cm}|}  
+			\hline
+			\textbf{f(x)} & \textbf{Peor} & \textbf{Mejor} & \textbf{Promedio} & \textbf{Mediana} & \textbf{Desviación estándar} \\  
+			\hline
+			f1 & 1.3949 & 2.5994 & 2.1067 & 2.0907 & 0.3010 \\
+			f2 & 0.0037 & 1.0159 & 0.1740 & 0.0304 & 0.2920 \\
+			f3 & 0.0379 & 0.5611 & 0.2319 & 0.1944 & 0.1462 \\
+			f4 & 3.2157 & 5.2511 & 4.1232 & 4.0357 & 0.5391 \\
+			f5 & 0.2728 & 0.6614 & 0.3403 & 0.3147 & 0.0875 \\
+			f6 & 0.1920 & 0.4877 & 0.3026 & 0.2955 & 0.0739 \\
+			f7 & 0.1070 & 0.2585 & 0.1833 & 0.1962 & 0.0406 \\
+			f8 & 0.0974 & 1.2510 & 0.3685 & 0.3258 & 0.2238 \\
+			f9 & 0.0611 & 0.5272 & 0.1840 & 0.1092 & 0.1420 \\
+			f10 & 0.2390 & 1.4073 & 0.4699 & 0.3321 & 0.3459 \\
+			\hline
+		\end{tabular}
+		\caption{Estadísticas de tiempo de ejecución por función (\textit{Hill climbing}).}
+		\label{tab:time_hc}
+	\end{table}
+	
+	
+	\section{Simulated Annealing}
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|c|c|c|c|c|p{2.1cm}|}  
+			\hline
+			\textbf{f(x)} & \textbf{Peor} & \textbf{Mejor} & \textbf{Promedio} & \textbf{Mediana} & \textbf{Desviación estándar} \\  
+			\hline
+			f1  & -1.2460e+10 & -2.4494e+04 & -6.2340e+08 & -4.9583e+04 & 2.7861e+09 \\
+			f2  & -2.6553e+97  & -1.1543e+10  & -1.3276e+96  & -3.7496e+14  & 5.9373e+96 \\
+			f3  & -1.0030e+06  & -8.5706e+05  & -9.1060e+05  & -9.0083e+05  & 4.3764e+04 \\
+			f4  & -1025.97     & -568.33     & -655.39     & -617.40     & 106.62 \\
+			f5  & -2755.05     & -1976.85    & -2464.06    & -2579.62    & 274.80 \\
+			f6  & -905.67      & -768.02     & -830.47     & -831.76     & 43.01 \\
+			f7  & -9114.76     & -3071.32    & -4114.49    & -3701.26    & 1358.74 \\
+			f8  & -3125.81     & -2326.66    & -2670.50    & -2676.52    & 259.03 \\
+			f9  & -71191.06    & -65976.84   & -68020.84   & -68168.09   & 1238.82 \\
+			f10 & -17334.65    & -12570.57   & -14615.18   & -14440.98   & 1404.16 \\
+			\hline
+		\end{tabular}
+		\caption{Estadísticas de energía por función (\textit{Simulated Annealing})}
+		\label{tab:res_sa}
+	\end{table}
+	
+	
+	
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|c|c|c|c|c|p{2.1cm}|}  
+			\hline
+			\textbf{f(x)} & \textbf{Peor} & \textbf{Mejor} & \textbf{Promedio} & \textbf{Mediana} & \textbf{Desviación estándar} \\  
+			\hline
+			f1  & 0.5162 & 0.4168 & 0.4609 & 0.4649 & 0.0266 \\
+			f2  & 0.5118 & 0.4309 & 0.4777 & 0.4790 & 0.0250 \\
+			f3  & 0.5805 & 0.4552 & 0.5201 & 0.5231 & 0.0295 \\
+			f4  & 0.5738 & 0.4678 & 0.5154 & 0.5051 & 0.0337 \\
+			f5  & 0.5311 & 0.4374 & 0.4921 & 0.4915 & 0.0256 \\
+			f6  & 0.5812 & 0.4854 & 0.5318 & 0.5296 & 0.0290 \\
+			f7  & 0.7874 & 0.6239 & 0.6861 & 0.6834 & 0.0465 \\
+			f8  & 0.6256 & 0.4952 & 0.5541 & 0.5497 & 0.0320 \\
+			f9  & 0.6721 & 0.5378 & 0.5995 & 0.5967 & 0.0425 \\
+			f10 & 0.7984 & 0.6259 & 0.6938 & 0.6884 & 0.0468 \\
+			\hline
+		\end{tabular}
+		\caption{Estadísticas de tiempo de ejecución por función (\textit{Simulated Annealing}).}
+		\label{tab:time_sa}
+	\end{table}
+	
+	
+	
 	
 \end{document}
