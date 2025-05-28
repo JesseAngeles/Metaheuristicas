@@ -59,7 +59,7 @@ def main_cec2017():
         "UniversalRandom": select_universal,
         "Tournament": select_tournament,
         "Proportional": select_proportional,
-        "NegativeAssortative": select_negative
+        "NegativeAssortative": select_negative  
     }
 
     crossover_real = {
@@ -80,7 +80,7 @@ def main_cec2017():
     }
 
     iterations = 100
-    epochs = 1000
+    epochs = 100
     dimension = 100
 
     os.makedirs("results", exist_ok=True)
@@ -92,36 +92,42 @@ def main_cec2017():
             "BestScore", "WorstScore", "MeanScore", "StdDev"
         ])
 
-        for function_index, function in enumerate(all_functions[:11]):
-            for sel_name, sel_func in selection.items():
-                for cross_name, cross_func in crossover_real.items():
-                    for mut_name, mut_func in mutation.items():
-                        for rep_name, rep_func in replace.items():
-                            for stationary in np.arange(0, 1.01, 0.1):
-                                args_list = [
-                                    (function, dimension, sel_func, cross_func, mut_func, rep_func, stationary, epochs)
-                                    for _ in range(iterations)
-                                ]
 
-                                with mp.Pool(mp.cpu_count()) as pool:
-                                    scores = pool.map(run_cec_iteration, args_list)
+        # for function_index, function in enumerate(all_functions[:11]):
+        
+        function_index = 5
+        function = all_functions[function_index - 1]
 
-                                try:
-                                    if isinstance(scores, list) and len(scores) > 0:
-                                        best = max(scores)
-                                        worst = min(scores)
-                                        mean = statistics.mean(scores)
-                                        stddev = statistics.stdev(scores) if len(scores) > 1 else 0.0
+        for sel_name, sel_func in selection.items():
+            for cross_name, cross_func in crossover_real.items():
+                for mut_name, mut_func in mutation.items():
+                    for rep_name, rep_func in replace.items():
+                        print(1)
+                        for stationary in np.arange(0, 1.01, 0.1):
+                            args_list = [
+                                (function, dimension, sel_func, cross_func, mut_func, rep_func, stationary, epochs)
+                                for _ in range(iterations)
+                            ]
 
-                                        writer.writerow([
-                                            function_index, round(stationary, 1), sel_name, cross_name, mut_name, rep_name,
-                                            best, worst, mean, stddev
-                                        ])
-                                    else:
-                                        print(f"[WARNING] Skipping stats for function {function_index} — invalid scores.")
+                            with mp.Pool(mp.cpu_count()) as pool:
+                                scores = pool.map(run_cec_iteration, args_list)
 
-                                except Exception as e:
-                                    print(f"[ERROR] Skipping function {function_index} due to: {e}")
+                            try:
+                                if isinstance(scores, list) and len(scores) > 0:
+                                    best = max(scores)
+                                    worst = min(scores)
+                                    mean = statistics.mean(scores)
+                                    stddev = statistics.stdev(scores) if len(scores) > 1 else 0.0
+
+                                    writer.writerow([
+                                        function_index, round(stationary, 1), sel_name, cross_name, mut_name, rep_name,
+                                        best, worst, mean, stddev
+                                    ])
+                                else:
+                                    print(f"[WARNING] Skipping stats for function {function_index} — invalid scores.")
+
+                            except Exception as e:
+                                print(f"[ERROR] Skipping function {function_index} due to: {e}")
 
 
 if __name__ == "__main__":
