@@ -2,10 +2,10 @@ import random
 from functools import partial
 
 from Algorithms.Metaheuristic import Metaheuristic
-from Algorithms.GASelectionFunctions import SelectionFunctions as Selection
-from Algorithms.GACrossoverFunctions import CrossoverFunctions as Crossover
-from Algorithms.GAMutationFunctions import MutationFunctions as Mutation
-from Algorithms.GAReplaceFunctions import ReplaceFunctions as Replace
+from Algorithms.GeneticFunctions.GASelectionFunctions import SelectionFunctions as Selection
+from Algorithms.GeneticFunctions.GACrossoverFunctions import CrossoverFunctions as Crossover
+from Algorithms.GeneticFunctions.GAMutationFunctions import MutationFunctions as Mutation
+from Algorithms.GeneticFunctions.GAReplaceFunctions import ReplaceFunctions as Replace
 
 class GeneticAlgorithm(Metaheuristic):
     def __init__(self, problem, population_size: int = 16):
