@@ -1,21 +1,13 @@
-import tkinter as tk
-from UI.KnapsackWindow import knapsack_problem_window
-from UI.TravelSalesmanWindow import travel_salesman_problem_window
-from UI.SumFunctionWindow import sum_function_window
+from Algorithms.Axolotl import Axolotl
 
-def main():
-    root = tk.Tk()
-    root.title("Main Window")
-    root.geometry("300x500")
-    root.protocol("WM_DELETE_WINDOW", root.quit)
+from Problems.KnapsackProblem import KnapsackProblem
 
-    tk.Label(root, text="Simulated Annealing", font=("Arial", 14)).pack(pady=20)
-    tk.Button(root, text="Knapsack", command=lambda: knapsack_problem_window(root)).pack(pady=10)
-    tk.Button(root, text="Travel Salesman", command=lambda: travel_salesman_problem_window(root)).pack(pady=10)
-    tk.Button(root, text="Sum Function", command=lambda: sum_function_window(root)).pack(pady=10)
-    tk.Button(root, text="Exit", command=root.quit).pack(pady=10)
-    
-    root.mainloop()
 
-if __name__ == "__main__":
-    main()
+ksp = KnapsackProblem(10, 100)
+
+a = Axolotl(ksp)
+a.optimize()
+
+for _ in range(1000):
+    a.optimize()
+    print(a.bestIndividual(a.population), ksp.objective(a.bestIndividual(a.population)))

@@ -18,6 +18,10 @@ class Problem(ABC):
         pass
 
     @abstractmethod
+    def normalizeSolution(self, solution: Any) -> Any:
+        raise NotImplementedError("Subclasses should implement this!")
+
+    @abstractmethod
     def getRandomNeighbour(self, solution:Any) -> Any:
         raise NotImplementedError("Subclasses should implement this!")
 

@@ -27,18 +27,24 @@ class KnapsackProblem(Problem):
     def generateInitialSolution(self):
         return [random.randint(0, 1) for _ in self.information['values']]
         
+    def normalizeSolution(self, solution):
+        return [ 0 if dimention < 0.5 else 1 for dimention in solution ]
+        
+
     def getRandomNeighbour(self, solution):
         neighbour = solution[:]
         index = random.randint(0, len(solution) - 1)
         neighbour[index] = 1 - int(neighbour[index])
         return neighbour
 
-    def getNextNeighbour(self, solution, *args, **kwargs):
-        return super().getNextNeighbour(solution, *args, **kwargs)
-    
+    def getNextNeighbour(self, solution, index):
+        sol = solution[:]
+        sol[index] = 1 - sol[index]
+        return sol
+
     def getNeighbours(self, solution):
         return super().getNeighbours(solution)
-    
+
     def printInformation(self):
         print("--INFORMATION---")
         print(f"Total items: {self.information.get('items')}")
