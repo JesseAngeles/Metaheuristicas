@@ -4,7 +4,7 @@ import copy
 from Algorithms.Metaheuristic import Metaheuristic
 
 class Axolotl(Metaheuristic):
-    def __init__(self, problem, population_size = 10, male_size = 0.5, damage = 0.5, regeneration = 0.1, tournament_size = 3, alpha = 0.5):
+    def __init__(self, problem, population_size = 32, male_size = 0.5, damage = 0.5, regeneration = 0.1, tournament_size = 3, alpha = 0.5):
         super().__init__(problem)
         self.population_size = population_size
         self.male_size = int(self.population_size * male_size)

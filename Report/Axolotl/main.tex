@@ -1,0 +1,131 @@
+%Config
+\documentclass[12pt,twoside]{report}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[a4paper]{geometry}
+
+\usepackage{graphicx}               % Para incluir imágenes
+\usepackage{amsmath}                % Para el manejo de matemáticas
+\usepackage{url}
+\usepackage{array}					% Para ajustar el texto en la celda
+\usepackage{xcolor}
+\usepackage{amssymb}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+% Opening
+\title{Mexican Axolotl Optimization}
+\author{Erick Jesse Angeles López}
+
+
+% Definir un comando para palabras clave
+\newcommand{\keywords}[1]{%
+	\begin{center}
+		\textbf{Palabras clave:} #1
+	\end{center}
+}
+
+\renewcommand{\baselinestretch}{1}
+\setcounter{page}{1}
+\setlength{\textheight}{21.6cm}
+\setlength{\textwidth}{14cm}
+\setlength{\oddsidemargin}{1cm}
+\setlength{\evensidemargin}{1cm}
+\pagestyle{myheadings}
+\thispagestyle{empty}
+\markboth{\small{Ángeles López Erick Jesse}}{\small{Mexican Axolotl Optimization}}
+\date{}
+
+\begin{document}
+	
+	\begin{center}
+		
+		% Contenido izquierdo - Imagen
+		\begin{minipage}{0.17\textwidth}
+			\centering
+			\includegraphics[width=0.7\textwidth]{img/cic_logo.png} % Ajusta esta línea
+		\end{minipage}
+		\begin{minipage}{.55\textwidth}
+			\centering
+			{\Large Instituto Politécnico Nacional}\\
+			{\Large Escuela Superior de Cómputo}\\
+			{\Large Centro de Investigación en Computación}
+		\end{minipage}
+		\begin{minipage}{0.17\textwidth}
+			\centering
+			\includegraphics[width=0.9\textwidth]{img/escom_logo} % Ajusta esta línea
+		\end{minipage}			
+	\end{center}
+	
+	
+	\centerline{\bf Ingeniería en Inteligencia Artificial, Mexican Axolotl Optimization}
+	
+	\centerline{\bf Fecha: \today}
+	
+	\centerline{}
+	
+	%\centerline{}
+	
+	
+	\begin{center}
+		\Large{\textsc{Mexican Axolotl Optimization}} 
+	\end{center}
+	\centerline{}
+	\centerline{\bf {\textit{Presenta}}}
+	\centerline{}
+	\centerline{\bf {Angeles López Erick Jesse\footnote{eangelesl1700@alumno.ipn.mx}}}
+	\centerline{}
+	\centerline{}
+	\centerline{\bf {Disponible en:}}
+	\centerline{\text{\url{github.com/JesseAngeles/Metaheuristicas}}}
+	
+
+	\newtheorem{Theorem}{\quad Theorem}[section]
+	
+	\newtheorem{Definition}[Theorem]{\quad Definition}
+	
+	\newtheorem{Corollary}[Theorem]{\quad Corollary}
+	
+	\newtheorem{Lemma}[Theorem]{\quad Lemma}
+	
+	\newtheorem{Example}[Theorem]{\quad Example}
+	
+	\bigskip
+	
+	\bigskip
+	
+	\begin{center}\textbf{Resumen}\end{center}
+	
+	RESUMEN \\ 
+	
+	\keywords{PALABRAS CLAVE}
+	
+	\clearpage
+	
+	\tableofcontents
+	\clearpage
+	
+	\chapter*{Introducción}
+	\addcontentsline{toc}{chapter}{Introducción}
+	
+	\input{MAO}
+	\input{Problemas}
+	\input{Codigo}
+	\input{Resultados}	
+
+	\chapter*{Conclusiones}
+	\addcontentsline{toc}{chapter}{Conclusiones}
+	
+
+	% Referencias
+	\clearpage
+	\addcontentsline{toc}{chapter}{Referencias}
+	\bibliographystyle{IEEEtran}
+	\bibliography{referencias}
+	
+	\clearpage
+	\chapter*{Anexos}
+	\addcontentsline{toc}{chapter}{Anexos}
+
+
+
+\end{document}
