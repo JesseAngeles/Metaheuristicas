@@ -26,7 +26,12 @@ class SumFunctionProblem(Problem):
     def generateInitialSolution(self):
         solution = [random.randint(self.information['min'], self.information['max']) for _ in range(self.information['size'])]
         return solution
-        
+    
+    def normalizeSolution(self, solution):
+        for i in range(len(solution)):
+            solution[i] = int(round(solution[i], 0))
+        return solution
+
     def getRandomNeighbour(self, solution):
         neighbour = solution[:]
         index = random.randint(0, len(solution) - 1)
@@ -41,9 +46,11 @@ class SumFunctionProblem(Problem):
 
         return neighbour
 
-    def getNextNeighbour(self, solution, *args, **kwargs):
-        return super().getNextNeighbour(solution, *args, **kwargs)
-    
+    def getNextNeighbour(self, solution, index):
+        sol = solution[:]
+        sol[index] += random.choice([-1, 1]) 
+        return sol
+
     def getNeighbours(self, solution):
         return super().getNeighbours(solution)
     

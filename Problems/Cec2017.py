@@ -27,6 +27,9 @@ class Cec2017(Problem):
 
         return solution
 
+    def normalizeSolution(self, solution):
+        return super().normalizeSolution(solution)
+
     def getRandomNeighbour(self, solution):
         neighbour = solution[:]
         index = random.randint(0, len(solution) - 1)
@@ -35,9 +38,11 @@ class Cec2017(Problem):
         neighbour[index] += alpha
         return neighbour
 
-    def getNextNeighbour(self, solution, *args, **kwargs):
-        return super().getNextNeighbour(solution, *args, **kwargs)
-    
+    def getNextNeighbour(self, solution, index):
+        sol = solution[:]
+        sol[index] = sol[index] + random.uniform(-3, 3)
+        return sol
+
     def getNeighbours(self, solution):
         return super().getNeighbours(solution)
     

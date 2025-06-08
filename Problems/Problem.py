@@ -19,7 +19,7 @@ class Problem(ABC):
 
     @abstractmethod
     def normalizeSolution(self, solution: Any) -> Any:
-        raise NotImplementedError("Subclasses should implement this!")
+        return solution
 
     @abstractmethod
     def getRandomNeighbour(self, solution:Any) -> Any:

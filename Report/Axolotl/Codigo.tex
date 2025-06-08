@@ -1,1 +1,277 @@
-\chapter{Código}
+\chapter{Codigo}
+
+\section{Problem}
+
+Los problemas a optimizar siguen una mista estructura. Dado esto, se optó por diseñar una clase que generaliza el problema y permite y facilita la definición de nuevos problemas.
+
+El código \ref{lst:problem} incluye los siguientes métodos los cuales deben de ser implementados por sus clases hijas:
+\begin{itemize}
+	\item \textit{generateInformation}: Función que define la información necesaria para calcular la función objetivo. La información adicional depende del problema.
+	\item \textit{objective}: Función que calcula la utilidad de la solución, si es un problema de minimización tiene que devolver con el signo opuesto. 
+	\item \textit{generateInitialSolution}: Función que genera una solución.
+	\item \textit{getRandomNeighbour}: Obtiene un vecino de forma aleatoria.
+	\item \textit{getNextNeighbour}: Si es necesario manejar indices, esta función permite obtener un vecino tras otro.
+	\item \textit{getNeighbours}: Devuelve todos los vecinos.
+\end{itemize}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:problem} ,caption={Clase \textit{problem}}]
+class Problem(ABC):
+  def __init__(self,):
+    self.information:Any = {}
+
+    @abstractmethod
+    def generateInformation(self, *args, **kwargs) -> None: pass
+
+    @abstractmethod
+    def objective(self, solution: Any) -> float: pass
+
+    @abstractmethod
+    def generateInitialSolution(self) -> Any: pass
+
+	@abstractmethod
+	def normalizeSolution(self, solution: Any) -> Any: return solution
+
+    @abstractmethod
+    def getRandomNeighbour(self, solution:Any) -> Any: pass
+
+    @abstractmethod
+    def getNextNeighbour(self, solution:Any, *args, **kwargs) -> Any: pass
+
+    @abstractmethod
+    def getNeighbours(self, solution: Any) -> list: pass
+
+    @abstractmethod
+    def printInformation(self) -> None: pass
+\end{lstlisting}
+
+\subsection{Knapsack problem}
+
+La clase \textit{knapsackProblem} hereda de la clase \textit{Problem} e implementa las siguientes funciones.
+
+La función \ref{lst:kp-gi} genera de manera aleatoria un conjunto de elementos en la mochila con pesos y valores aleatorios en un rango de $[1,10]$. La función \ref{lst:kp-e} calcula la energía del sistema la cual suma todos los pesos y valores de los elementos que se encuentran en la solución, si el peso es menor al capacidad de la mochila entonces devuelve el valor de la mochila, en caso contrario devuelve la diferencia de el peso actual menos la capacidad máxima.
+
+La función \ref{lst:kp-gis} genera soluciones aleatorias de combinaciones y no regresa ninguna de ellas hasta que el peso de la solución sea menor a la capacidad máxima. Finalmente, la función \ref{lst:kp-rn} se encarga de generar un vecino de forma aleatoria, primero selecciona un elemento aleatorio del vector y después lo invierte.  
+
+\begin{lstlisting}[style=pythonstyle, label={lst:kp-gi} ,caption={Función \textit{generateInformation} de Knapsack problem}]
+	def generate_information(self, items, capacity):
+	self.information = {
+		"items": items,
+		"values": [(random.randint(1,10), random.randint(1, 10)) for _ in range(items)],
+		"capacity": capacity
+	}
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:kp-e} ,caption={Función \textit{objective} de Knapsack problem}]
+	def objective(self, solution):
+	total_weight = total_value = 0
+	for i, selected in enumerate(solution):
+	if selected:
+	total_weight += self.information["values"][i][0]
+	total_value += self.information["values"][i][1]
+	if total_weight > self.information["capacity"]:
+	return self.information["capacity"] - total_weight 
+	return total_value
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:kp-gis} ,caption={Función \textit{generateInitialSolution} de Knapsack problem}]
+	def generateInitialSolution(self):
+	return [random.randint(0, 1) for _ in self.information['values']]
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:kp-rn} ,caption={Función \textit{getRandomNeighbour} de Knapsack problem}]
+	def getRandomNeighbour(self, solution):
+	neighbour = solution[:]
+	index = random.randint(0, len(solution) - 1)
+	neighbour[index] = 1 - int(neighbour[index])
+	return neighbour  
+\end{lstlisting}
+
+Para \textit{MAO}, la función \textit{normalize solution devuelve un valor binario si son mayores o menores 0.5}.
+
+\subsection{Sum function Problem}
+
+La función \ref{lst:sfp-gi} unicamente define el tamaño del vector y los rangos de valores. por otro lado, la función \ref{lst:sfp-e} calcula la energía del sistema dada por la suma de los cuadrados, dado que es una función de minimización se invierte el signo.
+
+La función \ref{lst:sfp-gis} genera un vector de $n$ elementos aleatorios en los rangos definidos, mientras que la función \ref{lst:sfp-gn} suma  o resta en uno a un elemento aleatorio del vector (dado que se considera una configuración circular, se ajusta el valor si el nuevo valor no se encuentra en el rango).
+
+\begin{lstlisting}[style=pythonstyle, label={lst:sfp-gi} ,caption={Función \textit{generateInformation} de SumFunctionProblem}]
+	def generateInformation(self, size: int, min: int, max: int):
+	self.information = {
+		"size": size,
+		"min": min,
+		"max": max
+	}
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:sfp-e} ,caption={Función \textit{objective} de SumFunctionProblem}]
+	def objective(self, solution):
+	total_sum:float = 0
+	
+	for val in solution:
+	total_sum += val**2
+	
+	return -total_sum
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:sfp-gis} ,caption={Función \textit{generateInitialSolution} de SumFunctionProblem}]
+	def generateInitialSolution(self):
+	solution = [random.randint(self.information['min'], self.information['max']) for _ in range(self.information['size'])]
+	return solution
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:sfp-gn} ,caption={Función \textit{getRandomNeighbour} de CEC 2017}]
+	def getRandomNeighbour(self, solution):
+	neighbour = solution[:]
+	index = random.randint(0, len(solution) - 1)
+	sign = random.choice([-1 , 1])
+	neighbour[index] += sign
+	
+	if neighbour[index] > self.information['max']:
+	neighbour[index] = self.information['min']
+	
+	if neighbour[index] < self.information['min']:
+	neighbour[index] = self.information['max']
+	
+	return neighbour
+\end{lstlisting}
+
+La función \textit{normalizeSolution} redondea la solución a un valor entero.
+
+\subsection{CEC 2017}
+
+La función \ref{lst:cec-gi} define la función a optimizar, los rangos de valores, el tamaño de la dimensión y la tasa de cambio (ya que la solución es real). Por otro lado, la función \ref{lst:cec-e} calcula la energía del sistema dados los parámetros ya definidos.
+
+La función \ref{lst:cec-gis} genera un vector de la dimensión definida restringida por la información adicional definida, mientras que la función \ref{lst:cec-gn} suma  o resta en \textit{alpha} a un elemento aleatorio del vector.
+
+\begin{lstlisting}[style=pythonstyle, label={lst:cec-gi} ,caption={Función \textit{generateInformation} de CEC 2017}]
+	def generateInformation(self, function: callable, low:int, high:int, dimention:int, alpha:int):
+	self.information = {
+		"function": function,
+		"low" : low,
+		"high": high,
+		"dimention": dimention,
+		"alpha": alpha
+	}
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:cec-e} ,caption={Función \textit{objective} de CEC 2017}]
+	def objective(self, solution):
+	return - self.information["function"]([solution])[0]
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:cec-gis} ,caption={Función \textit{generateInitialSolution} de CEC 2017}]
+	def generateInitialSolution(self):
+	solution = np.random.uniform(low=self.information["low"],
+	high=self.information["high"],
+	size=self.information["dimention"]).tolist()
+	
+	return solution
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonstyle, label={lst:cec-gn} ,caption={Función \textit{getRandomNeighbour} de CEC 2017}]
+	def getRandomNeighbour(self, solution):
+	neighbour = solution[:]
+	index = random.randint(0, len(solution) - 1)
+	alpha = random.uniform(-self.information["alpha"], self.information["alpha"])
+	
+	neighbour[index] += alpha
+	return neighbour
+\end{lstlisting}
+
+\section{Metaheuristic}
+
+De igual manera, el se diseña una clase padre \ref{lst:meta} que implemente algunas de las funciones \textit{hill climbing}, \textit{simulated annealing}, \textit{genetic algorithm} y \textit{Mexican axolotl optimization}.
+
+\subsection{Mexican Axolotl Optimization}
+
+Se diseña una clase \textit{Axolotl} que hereda de la clase \textit{Metaheuristic} y recibe los siguiente meta-parámetros:
+\begin{itemize}
+	\item Tamaño de la población
+	\item Probabilidad de daño.
+	\item Probabilidad de regeneración.
+	\item Tamaño del torneo.
+	\item Tasa de aprendizaje $\alpha$.
+\end{itemize}
+
+Se definen la funciones que se ejecutan en cada paso.
+
+\subsubsection{Transition}
+
+La función \ref{lst:transition} recibe un subconjunto de la población (machos o hembras) y encuentra los valores de aptitud de todos los individuos y define el mejor para compararlo con el resto. Se calcula la probabilidad inversa de transición y si supera un umbral aleatorio se aproxima al mejor, en caso contrario se mueve de manera aleatoria. Al finalizar es necesario aplicar una función de normalización de resultados, ya que se puede utilizar para resolver problemas en espacios discretos.
+
+\begin{lstlisting}[style=pythonstyle, label={lst:transition} ,caption={Función \textit{transition}}]
+def transition(self, population):
+  best = self.bestIndividual(population)
+  values = [ self.problem.objective(individual) for individual in population ]
+  total = sum(values)
+
+  for i, individual in enumerate(population):
+	objective = values[i]
+	probability = objective / total if total else 0
+	r = random.random() / len(population)
+
+  	if probability < r:
+	  for j in range(len(individual)):
+		individual[j] = individual[j] + (best[j] - individual[j]) * self.alpha
+	else:
+	  population[i] = self.problem.getRandomNeighbour(individual)
+
+  population[i] = self.problem.normalizeSolution(individual)
+\end{lstlisting}
+
+\subsubsection{Injury And Restoration}
+
+Después, a los conjuntos de machos y hembras se les aplica la función \ref{lst:injury} que itera sobre una primera probabilidad para ser candidato a mutaciones y después se itera cada dimensión para modificar su valor dada una probabilidad.
+
+\begin{lstlisting}[style=pythonstyle, label={lst:injury} ,caption={Función \textit{injuryAndRestoration}}]
+def injuryAndRestoration(self, population):
+  for i, individual in enumerate(population):
+	if random.random() < self.damage:
+	  for _ in individual:
+		if random.random() < self.regeneration:
+		  population[i] = self.problem.getNextNeighbour(individual, i)
+\end{lstlisting}
+
+\subsubsection{Uniform}
+
+Para la reproducción es necesario definir la función \textit{uniform} que define el comportamiento de como se mezclan las dimensiones del macho y la hembra para generar dos nuevas criás. El código \ref{lst:uniform} genera una secuencia binaria aleatoria de tamaño $D$ para después generar los nuevos hijos (Como en la figura \ref{fig:uniform}).
+
+\begin{lstlisting}[style=pythonstyle, label={lst:uniform} ,caption={Función \textit{Uniform}}]
+def uniform(self, male, female):
+  child1 = []
+  child2 = []
+
+  for i in range(len(male)):
+	if random.random() < 0.5:
+	  child1.append(male[i])
+	  child2.append(female[i])
+	else:
+	  child1.append(female[i])
+	  child2.append(male[i])
+
+  population = [ male, female, child1, child2 ]
+  population.sort(key=self.problem.objective, reverse= True)         
+  return population[0:2]
+\end{lstlisting}
+
+\subsubsection{Reproduction}
+
+La función del código \ref{lst:reproduction} itera sobre todas las hembras y obtiene una sub-población de machos de forma aleatoria para reproducirse y poner dos huevos. Entre el macho, la hembra y los dos huevos se seleccionan los dos mejores, los cuales parte de la siguiente población de hembras y de machos (respectivamente).
+
+\begin{lstlisting}[style=pythonstyle, label={lst:reproduction} ,caption={Función \textit{Reproduction}}]
+def reproduction(self):
+  new_males = []
+  new_females = []
+  for female in self.females:
+    males = random.sample(self.males, self.tournament_size)
+    best_male = self.bestIndividual(males)
+    [ new_female, new_male ] = self.uniform(best_male, female)
+    new_males.append(new_male)
+    new_females.append(new_female)
+
+  self.males = new_males
+  self.females = new_females
+\end{lstlisting}
+
+
+

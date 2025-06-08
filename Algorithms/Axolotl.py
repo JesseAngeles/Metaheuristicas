@@ -1,18 +1,17 @@
 import random
-import copy
+import numpy as np
 
 from Algorithms.Metaheuristic import Metaheuristic
 
 class Axolotl(Metaheuristic):
-    def __init__(self, problem, population_size = 32, male_size = 0.5, damage = 0.5, regeneration = 0.1, tournament_size = 3, alpha = 0.5):
+    def __init__(self, problem, population_size = 32, damage = 0.5, regeneration = 0.1, tournament_size = 3, alpha = 0.5):
         super().__init__(problem)
         self.population_size = population_size
-        self.male_size = int(self.population_size * male_size)
+        self.male_size = int(self.population_size / 2)
         self.damage = damage
         self.regeneration = regeneration
-        self.torunament_size = tournament_size
+        self.tournament_size = tournament_size
         self.alpha = alpha
-        self.k = 3
         
         self.resetProblem()
 
@@ -34,10 +33,8 @@ class Axolotl(Metaheuristic):
             self.injuryAndRestoration(self.females)
             
             # Reproduction
-            new_population = self.reproduction()
-            
-            # Assortment
-            self.assortment(new_population)
+            self.reproduction()
+
             
     def transition(self, population):
         best = self.bestIndividual(population)
@@ -49,30 +46,31 @@ class Axolotl(Metaheuristic):
             probability = objective / total if total else 0
             r = random.random() / len(population)
             
-            for j in range(len(individual)):
-                if probability < r and not self.compare(best, individual):
+            if probability < r:
+                for j in range(len(individual)):
                     individual[j] = individual[j] + (best[j] - individual[j]) * self.alpha
-                else:
-                    population[i] = self.problem.getRandomNeighbour(individual)
-                           
+            else:
+                population[i] = self.problem.getRandomNeighbour(individual)
+            
             population[i] = self.problem.normalizeSolution(individual)
  
     def injuryAndRestoration(self, population):
         for i, individual in enumerate(population):
             if random.random() < self.damage:
-                for dimention in individual:
+                for j in range(len(individual)):
                     if random.random() < self.regeneration:
-                        population[i] = self.problem.getNextNeighbour(individual, i)
-    
+                        individual = self.problem.getNextNeighbour(individual, j)
+                population[i] = individual 
+
     def reproduction(self):
         new_males = []
         new_females = []
         for female in self.females:
-            males = random.sample(self.males, self.k)
+            males = random.sample(self.males, self.tournament_size)
             best_male = self.bestIndividual(males)
-            [ new_f, new_m ] = self.uniform(best_male, female)
-            new_males.append(new_m)
-            new_females.append(new_f)
+            [ new_female, new_male ] = self.uniform(best_male, female)
+            new_males.append(new_male)
+            new_females.append(new_female)
         
         self.males = new_males
         self.females = new_females
@@ -90,44 +88,28 @@ class Axolotl(Metaheuristic):
                 child2.append(male[i])
         
         population = [ male, female, child1, child2 ]
-        population.sort(key=self.problem.objective)         
+        population.sort(key=self.problem.objective, reverse= True)         
         return population[0:2]
-    
-    def reproduction(self, males, females):
-        generation = []
-        for i in range(len(males)):
-            child1 = []
-            child2 = []
-            
-            for j in range(len(males[i])):
-                if random.random() < 0.5:
-                    child1.append(males[i][j])
-                    child2.append(females[i][j])
-                else:
-                    child1.append(females[i][j])
-                    child2.append(males[i][j])
-            
-            generation.append(child1)
-            generation.append(child2)
-        
-        return generation    
-        
-    def assortment(self, new_population: list):
-        combined = self.population + new_population
-        combined.sort(key=self.problem.objective, reverse=True)
-        self.population = combined[:len(self.population)]
-    
     
     def bestIndividual(self, population):
         return max(population, key=lambda ind: self.problem.objective(ind))
-    
-    def printPopulation(self):
-        for i in self.population:
-            print(i, self.problem.objective(i))
-        print(" ")
+
+    def best(self):
+        population = self.males + self.females
+        values = [self.problem.objective(ind) for ind in population]
+        best_idx = np.argmax(values)  # o np.argmax si es un problema de maximización
+        return values[best_idx]
 
     def compare(self, sol1, sol2):
         for i in range(len(sol1)):
             if sol1[i] != sol2[i]:
                 return False
         return True
+    
+    def printPopulation(self):
+        for i in self.males:
+            print(i, round(self.problem.objective(i),2))
+        print(" ")
+        for i in self.females:
+            print(i, round(self.problem.objective(i),2))
+        print(" ")

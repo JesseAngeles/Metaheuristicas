@@ -1,1 +1,181 @@
 \chapter{Resultados}
+
+A continuación se desarrollan las mejores configuracion de \textit{MAO} y se compara su rendimiento contra \textit{genetic algorithm} (con sus mejores configuraciones) para los problemas descritos.
+
+\section{Problemas}
+
+A continuación se presentan las mejores combinaciones para los problemas considerando 50 entrenamientos diferentes con 50 épocas.
+
+\subsection{knapsack Problem}
+
+Considerando 50 elementos en la mochila, una capacidad máxima de 50, los mejores resultados se obtienen con las configuraciones de la tabla \ref{tab:res_ksp}.
+
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{|p{0.15\textwidth}|p{0.16\textwidth}|p{0.16\textwidth}|p{0.16\textwidth}|p{0.16\textwidth}|}
+		\hline
+		\textbf{Mejor} & \textbf{\textit{best}} & \textbf{\textit{worst}} & \textbf{\textit{mean}} & \textbf{\textit{std dev}}  \\ \hline
+		
+		Damage & 0.7 & 0.0 & 0.7 & 0.9 \\
+		Regeneration & 0.1 & 0.4 & 0.1 & 0.4 \\
+		Tournament & 2 & 2 & 2 & 2 \\
+		Alpha & 0.1 & 0.3 & 0.1 & 0.1 \\ \hline
+		
+		\textit{best score} & 133.0000 & 133.0000 & 125.0000 & 132.0000 \\
+		\textit{worst score} & 110.0000 & 98.0000 & 110.0000 & 114.0000 \\
+		\textit{mean score} & 125.0000 & 116.6800 & 125.0000 & 124.8000 \\
+		\textit{std dev} & 5.3871 & 7.6357 & 5.3871 & 4.8906 \\ \hline
+	\end{tabular}
+	\caption{Mejores configuraciones de parámetros para el problema KSP con el algoritmo \textit{MAO}}
+	\label{tab:res_ksp}
+\end{table}
+
+Considerando 250 pruebas con 250 epocas de entrenamiento, una población de 32 (ambos) y \textit{genetic algorithm} con la siguiente configuración:
+\begin{itemize}[nosep]
+	\item Estacionario: $0.1\%$
+	\item Selección \textit{Negative assortative}
+	\item Cruza: \textit{Two point}
+	\item Reemplazo: \textit{restricted tournament}
+\end{itemize}
+Se obtuvieron los siguientes resultados:
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{|l|c|c|c|c|}
+		\hline
+		\textbf{Algoritmo} & \textbf{Best} & \textbf{Worst} & \textbf{Mean} & \textbf{StdDev} \\
+		\hline
+		\textit{MAO} & 151 & 71 & 111.21 & 15.5682 \\
+		\textit{GA}  & 146 & 79 & 115.87 & 14.1604 \\
+		\hline
+	\end{tabular}
+	\caption{Estadísticas comparativas entre \textit{MAO} y \textit{GA }para el problema \textit{Knapsack problem}}
+	\label{tab:mao-ga-ksp}
+\end{table}
+
+\subsection{Sum Function problem}
+
+Considerando 100 elementos en un rango de $[-100, 100]$, los mejores resultados se obtienen con las configuraciones de la tabla \ref{tab:res_sfp}. Nótese que ninguna de las configuraciones alcanzó la mejor solución de 0, esto es por el numero de épocas de entrenamiento realizadas son menores al tamaño del problema, diseñado de esta forma para poder analizar las diferencias.
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{|p{0.15\textwidth}|p{0.16\textwidth}|p{0.16\textwidth}|p{0.16\textwidth}|p{0.16\textwidth}|}
+		\hline
+		\textbf{Mejor} & \textbf{\textit{best}} & \textbf{\textit{worst}} & \textbf{\textit{mean}} & \textbf{\textit{std dev}}  \\ \hline
+		
+		Damage & 0.9 & 0.3 & 0.6 & 1.0 \\
+		Regeneration & 1.0 & 0.2 & 1.0 & 0.9 \\
+		Tournament & 2 & 2 & 2 & 2 \\
+		Alpha & 0.5 & 0.0 & 0.5 & 0.5 \\ \hline
+		
+		\textit{best score} & -12914 & -51141 & -17622 & -21457 \\
+		\textit{worst score} & -74623 & -82841 & -71509 & -60826 \\
+		\textit{mean score} & -43794.4000 & -66939.1400 & -39172.7600 & -41366.4800 \\
+		\textit{std dev} & 13824.4655 & 7925.9986 & 13103.4330 & 10032.3798 \\ \hline
+	\end{tabular}
+	\caption{Mejores configuraciones de parámetros para el problema SFP con el algoritmo \textit{MAO}}
+	\label{tab:res_sfp}
+\end{table}
+
+Considerando \textit{genetic algorithm} con la siguiente configuración:
+\begin{itemize}[nosep]
+	\item Estacionario: $0.3\%$
+	\item Selección \textit{Negative assortative}
+	\item Cruza: \textit{Blend}
+	\item Reemplazo: \textit{restricted tournament}
+\end{itemize}
+
+Se obtuvieron los siguientes resultados:
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{|l|c|c|c|c|}
+		\hline
+		\textbf{Algoritmo} & \textbf{Best} & \textbf{Worst} & \textbf{Mean} & \textbf{StdDev} \\
+		\hline
+		\textit{MAO} & -71 & -246 & -143.41 & 27.9164 \\
+		\textit{GA}  & -278.81 & -1061.63 & -515.30 & 120.6011 \\
+		\hline
+	\end{tabular}
+	\caption{Estadísticas comparativas entre \textit{MAO} y \textit{GA} para el problema \textit{Sum Function Problem (SFP)}}
+	\label{tab:mao-ga-sfp}
+\end{table}
+
+\subsection{CEC 2017}
+
+Dada la complejidad de lo problemas y el tiempo computacional, se realizaron 100 entrenamientos con 100 épocas cada uno. Las mejores configuraciones para cada problema se encuentra en la tabla \ref{tab:res_cec}.
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{|p{0.05\textwidth}| p{0.05\textwidth}| p{0.05\textwidth} |p{0.05\textwidth}|p{0.05\textwidth}| p{0.2\textwidth} |}
+		\hline
+		\textbf{\textit{F}}	& \textbf{\textit{D}} & \textbf{R} & \textbf{T} & \textbf{$\alpha$} & \textbf{\textit{best score}}\\ \hline
+		\textit{f1} & 1.0 & 0.8 & 2.0 & 0.2 & -5.8544e+11 \\ 
+		\textit{f2} & 1.0 & 0.8 & 10.0 & 0.6 & -1.5942e+78 \\ 
+		\textit{f3} & 0.6 & 0.8 & 2.0 & 0.4 & -3.0364e+05 \\ 
+		\textit{f4} & 1.0 & 1.0 & 2.0 & 0.0 & -5.8416e+03 \\ 
+		\textit{f5} & 0.8 & 0.2 & 6.0 & 0.6 & -1.3505e+03 \\ 
+		\textit{f6} & 0.8 & 0.6 & 2.0 & 0.4 & -6.5909e+02 \\ 
+		\textit{f7} & 0.8 & 1.0 & 2.0 & 0.2 & -2.5530e+03 \\ 
+		\textit{f8} & 0.4 & 0.6 & 4.0 & 0.2 & -1.6529e+03 \\ 
+		\textit{f9} & 0.2 & 0.0 & 2.0 & 0.2 & -2.8855e+04 \\ 
+		\textit{f10} & 0.8 & 0.2 & 6.0 & 0.4 & -1.8282e+04 \\ \hline
+	\end{tabular}
+	\caption{Mejores configuraciones de funciones para los problemas del \textit{cec 2017}.}
+	\label{tab:res_cec}
+\end{table}
+
+Ahora, dada la mejor configuración para cada problema, se realizan las pruebas para obtener los resultados y los tiempos de ejecución en las tabla \ref{tab:res_cec_res} y \ref{tab:res_cec_time}.
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|p{2.1cm}|}  
+		\hline
+		\textbf{f(x)} & \textbf{Peor} & \textbf{Mejor} & \textbf{Promedio} & \textbf{Mediana} & \textbf{Desviación estándar} \\  
+		\hline
+		f1  & \(-1.02e{11}\) & \(-5.49e{11}\) & \(-3.26e{11}\) & \(-3.17e{11}\) & \(1.07e{11}\) \\ 
+		f2  & \(-8.79e{116}\) & \(-6.37e{134}\) & \(-3.19e{133}\) & \(-2.28e{125}\) & \(1.39e{134}\) \\ 
+		f3  & \(-3.83e{5}\) & \(-6.76e{5}\) & \(-5.14e{5}\) & \(-5.26e{5}\) & \(7.74e{4}\) \\ 
+		f4  & \(-2.73e{3}\) & \(-5.25e{3}\) & \(-3.99e{3}\) & \(-3.95e{3}\) & \(7.57e{2}\) \\ 
+		f5  & \(-1.34e{3}\) & \(-1.81e{3}\) & \(-1.65e{3}\) & \(-1.68e{3}\) & \(1.21e{2}\) \\ 
+		f6  & \(-6.71e{2}\) & \(-7.11e{2}\) & \(-6.91e{2}\) & \(-6.93e{2}\) & \(1.08e{1}\) \\ 
+		f7  & \(-2.15e{3}\) & \(-3.14e{3}\) & \(-2.49e{3}\) & \(-2.38e{3}\) & \(2.54e{2}\) \\ 
+		f8  & \(-1.60e{3}\) & \(-2.36e{3}\) & \(-1.82e{3}\) & \(-1.80e{3}\) & \(1.66e{2}\) \\ 
+		f9  & \(-4.12e{4}\) & \(-8.90e{4}\) & \(-5.95e{4}\) & \(-5.68e{4}\) & \(1.48e{4}\) \\ 
+		f10 & \(-1.72e{4}\) & \(-2.34e{4}\) & \(-2.13e{4}\) & \(-2.15e{4}\) & \(1.30e{3}\) \\
+		\hline
+	\end{tabular}
+	\caption{Estadísticas de energía por función.}
+	\label{tab:res_cec_res}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|p{2.1cm}|}  
+		\hline
+		\textbf{f(x)} & \textbf{Peor} & \textbf{Mejor} & \textbf{Promedio} & \textbf{Mediana} & \textbf{Desviación estándar} \\  
+		\hline
+		f1  & 0.253 & 0.233 & 0.237 & 0.236 & 0.0045 \\ 
+		f2  & 0.428 & 0.416 & 0.422 & 0.421 & 0.0038 \\ 
+		f3  & 0.280 & 0.271 & 0.274 & 0.273 & 0.0020 \\ 
+		f4  & 0.281 & 0.276 & 0.277 & 0.277 & 0.0015 \\ 
+		f5  & 0.310 & 0.293 & 0.301 & 0.298 & 0.0064 \\ 
+		f6  & 0.306 & 0.293 & 0.299 & 0.300 & 0.0031 \\ 
+		f7  & 0.447 & 0.428 & 0.439 & 0.440 & 0.0055 \\ 
+		f8  & 0.353 & 0.344 & 0.346 & 0.346 & 0.0019 \\ 
+		f9  & 0.337 & 0.311 & 0.315 & 0.313 & 0.0053 \\ 
+		f10 & 0.557 & 0.532 & 0.545 & 0.546 & 0.0069 \\
+		\hline
+	\end{tabular}
+	\caption{Estadísticas de tiempo de ejecución por función.}
+	\label{tab:res_cec_time}
+\end{table}
+
+
+\section{Discusión}
+
+Para el problema de \textit{knapsack problem} el algoritmo de \textit{MAO} logro encontrar un mejor resultado por encima de \textit{genetic algorithm} con una diferencia de 5. Sin embargo, pese a encontrar un mejor resultado, tiene una media ligeramente menor, lo que significa que en algunos casos particulares es en donde encuentra el mejor resultado. 
+
+Para el problema de \textit{sum function problem}, \textit{MAO} encuentra un resultado mucho mejor que \textit{genetic algorithm} cada unocon su mejor configuración. También, entre mayor sea el daño y la regeneración mejores resultados se obtuvieron, lo que indica que la exploración es fundamental para este problema y, de igual forma que con \textit{knapsack problem}, un torneo de 2 resulta la mejor solución.
+
+Finalmente para los problemas de \textit{CEC 2017} las funciones funciones son aquellas que se dedicaron a la exploración y en casos particulares se incremento el tamaño del torneo (funciones $f2, f3, f5, f8, f10$). Por otro lado, los resultados obtenidos aplicando las configuraciones a cada una de las funciones no garantizan que se obtenga el mejor resultado, ya que comparando los resultados de \textit{genetic algorithm} hubo algunas funciones en donde se obtuvieron mejores resultados y en otras no. Sin embargo, la diferencia del mejor resultado y de tiempo de procesamiento no son muy diferentes.
+

@@ -11,6 +11,26 @@
 \usepackage{amssymb}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage{listings}
+\usepackage{enumitem}
+
+
+\lstdefinestyle{pythonstyle}{
+	language=Python,
+	basicstyle=\ttfamily\small,
+	keywordstyle=\color{blue}\bfseries,
+	commentstyle=\color{gray},
+	stringstyle=\color{red},
+	numbers=left,
+	numberstyle=\tiny,
+	stepnumber=1,
+	frame=single,
+	backgroundcolor=\color{lightgray!20},
+	tabsize=4,
+	showstringspaces=false,
+	breaklines=true,        % Permite que las líneas largas se dividan
+	linewidth=\linewidth    % Autoajuste al ancho del contenedor
+}
 
 % Opening
 \title{Mexican Axolotl Optimization}
@@ -97,16 +117,24 @@
 	
 	RESUMEN \\ 
 	
-	\keywords{PALABRAS CLAVE}
+	En esta practica se describe el comportamiento, las partes esenciales, configuraciones, implementación y comparación de resultados de \textit{Mexican Axolotl Optimization}, como un algoritmo bioinspirado utilizado para la búsqueda de óptimos globales en problemas de optimización.
+	
+	\keywords{Axolote, Evolución, Resultado óptimo}
 	
 	\clearpage
 	
 	\tableofcontents
 	\clearpage
 	
-	\chapter*{Introducción}
-	\addcontentsline{toc}{chapter}{Introducción}
+\chapter*{Introducción}
+\addcontentsline{toc}{chapter}{Introducción}
 	
+	\textit{Mexican Axolotl Optimization} (\textit{MAO}) es una técnica de optimización bioinspirada que toma como referencia las características biológicas y comportamentales únicas del axolote mexicano. Esta especie se destaca por su notable capacidad de regeneración de órganos, su habilidad para el camuflaje, así como por su complejo sistema reproductivo que involucra poblaciones diferenciadas de machos y hembras, además de mecanismos de cruza genómica. Estas propiedades naturales han servido de modelo para diseñar un algoritmo que simula procesos de supervivencia, adaptación y evolución, proporcionando un enfoque novedoso para resolver problemas de optimización complejos \cite{mao}.
+	
+	En esta práctica, el objetivo principal es comprender en profundidad el funcionamiento interno de \textit{MAO} y evaluar cómo sus principales metaparámetros influyen en su desempeño. Entre estos parámetros se encuentran la tasa de “aprendizaje”, que controla la velocidad de adaptación del algoritmo; la probabilidad de daño y la probabilidad de sanación, que simulan procesos de deterioro y recuperación biológica; y el tamaño del torneo para cruza, que determina la presión selectiva durante la combinación genética. Estos elementos representan etapas esenciales del algoritmo y su correcta configuración es fundamental para lograr un rendimiento óptimo.
+	
+	Esta exploración no solo contribuye a afianzar los fundamentos teóricos que sustentan \textit{MAO}, sino que también permite desarrollar un criterio práctico para la selección y ajuste de sus componentes, de modo que se adapten de manera eficiente a distintos tipos de problemas. De esta manera, se busca potenciar la aplicabilidad del algoritmo y facilitar su implementación en contextos reales donde la optimización es un desafío constante.
+
 	\input{MAO}
 	\input{Problemas}
 	\input{Codigo}
@@ -115,6 +143,13 @@
 	\chapter*{Conclusiones}
 	\addcontentsline{toc}{chapter}{Conclusiones}
 	
+	En esta practica se exploro el comportamiento del algoritmo \textit{Mexican Axolotl Optimization}, un método de optimización inspirado en el ciclo de vida y las bondades genéticas presentes en los axolotes. Este enfoque considera 4 etapas esenciales: \textit{transition}, \textit{injury and restoration}, \textit{reproduction} y \textit{assortment} y se implementaron para buscar soluciones en espacios de distintos tipos de problemas: \textit{knapsack problem}, \textit{sun function problem} y los problemas del \textit{CEC 2017}.
+	
+	Adicionalmente se probaron múltiples configuraciones de meta parámetros y mediante fuerza bruta encontrar la mejor configuración para cada problema. Esto indica que, de igual forma que con \textit{genetic algorithm}, cada problema requiere un tratamiento especial y es fundamental entender el porque ocurren ocurren estos resultados. El enfoque de esta practica unicamente busca mostrar los resultados de dichas configuraciones.
+	
+	Este algoritmo fue diseñado para espacios reales pero, sorpresivamente, tiene un buen rendimiento en problemas enteros y binarios. Lo que abre la posibilidad incluso de resolver problemas de permutación.
+	
+	\textit{MAO} tiene un rendimiento similar a \textit{genetic algorithm} (y en ocasiones superior), pero de igual manera su rendimiento requiere de un ajuste de meta parámetros. 
 
 	% Referencias
 	\clearpage
@@ -126,6 +161,50 @@
 	\chapter*{Anexos}
 	\addcontentsline{toc}{chapter}{Anexos}
 
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|c|c|c|c|c|p{2.1cm}|}  
+			\hline
+			\textbf{f(x)} & \textbf{Peor} & \textbf{Mejor} & \textbf{Promedio} & \textbf{Mediana} & \textbf{Desviación estándar} \\  
+			\hline
+			f1  & \(-3.92e{12}\) & \(-5.67e{12}\) & \(-5.00e{12}\) & \(-5.11e{12}\) & \(4.53e{11}\) \\ 
+			f2  & \(-8.71e{175}\) & \(-2.62e{191}\) & \(-1.98e{190}\) & \(-4.65e{183}\) & \(\infty\) \\ 
+			f3  & \(-6.53e{5}\) & \(-1.21e{6}\) & \(-9.24e{5}\) & \(-9.39e{5}\) & \(1.43e{5}\) \\ 
+			f4  & \(-1.28e{5}\) & \(-2.80e{5}\) & \(-2.22e{5}\) & \(-2.30e{5}\) & \(3.88e{4}\) \\ 
+			f5  & \(-2.48e{3}\) & \(-2.88e{3}\) & \(-2.71e{3}\) & \(-2.70e{3}\) & \(1.01e{2}\) \\ 
+			f6  & \(-7.34e{2}\) & \(-7.76e{2}\) & \(-7.51e{2}\) & \(-7.50e{2}\) & \(1.05e{1}\) \\ 
+			f7  & \(-1.01e{4}\) & \(-1.25e{4}\) & \(-1.14e{4}\) & \(-1.15e{4}\) & \(6.89e{2}\) \\ 
+			f8  & \(-2.94e{3}\) & \(-3.45e{3}\) & \(-3.10e{3}\) & \(-3.10e{3}\) & \(1.17e{2}\) \\ 
+			f9  & \(-7.03e{4}\) & \(-1.20e{5}\) & \(-8.76e{4}\) & \(-8.56e{4}\) & \(1.13e{4}\) \\ 
+			f10 & \(-2.98e{4}\) & \(-3.33e{4}\) & \(-3.12e{4}\) & \(-3.11e{4}\) & \(8.43e{2}\) \\
+			\hline
+		\end{tabular}
+		\caption{Estadísticas de energía por función mediante \textit{genetic algorithm}.}
+		\label{tab:res_cec_res_ga}
+	\end{table}
+	
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|c|c|c|c|c|p{2.1cm}|}  
+			\hline
+			\textbf{f(x)} & \textbf{Peor} & \textbf{Mejor} & \textbf{Promedio} & \textbf{Mediana} & \textbf{Desviación estándar} \\  
+			\hline
+			f1  & 0.294 & 0.274 & 0.282 & 0.281 & 0.0053 \\ 
+			f2  & 0.345 & 0.317 & 0.328 & 0.327 & 0.0076 \\ 
+			f3  & 0.380 & 0.368 & 0.374 & 0.373 & 0.0039 \\ 
+			f4  & 0.337 & 0.330 & 0.334 & 0.335 & 0.0021 \\ 
+			f5  & 0.328 & 0.314 & 0.317 & 0.316 & 0.0029 \\ 
+			f6  & 0.426 & 0.392 & 0.398 & 0.394 & 0.0083 \\ 
+			f7  & 0.568 & 0.561 & 0.564 & 0.564 & 0.0020 \\ 
+			f8  & 0.417 & 0.395 & 0.399 & 0.397 & 0.0048 \\ 
+			f9  & 0.493 & 0.473 & 0.475 & 0.473 & 0.0044 \\ 
+			f10 & 0.583 & 0.566 & 0.571 & 0.570 & 0.0045 \\
+			\hline
+		\end{tabular}
+		\caption{Estadísticas de tiempo de ejecución por función mediante \textit{genetic algorithm}.}
+		\label{tab:res_cec_time_ga}
+	\end{table}
 
 
 \end{document}

@@ -8,7 +8,7 @@ from Algorithms.GeneticFunctions.GAMutationFunctions import MutationFunctions as
 from Algorithms.GeneticFunctions.GAReplaceFunctions import ReplaceFunctions as Replace
 
 class GeneticAlgorithm(Metaheuristic):
-    def __init__(self, problem, population_size: int = 16):
+    def __init__(self, problem, population_size: int = 32):
         super().__init__(problem)
         self.population_size = population_size
         self.selection_functions = Selection
@@ -35,7 +35,7 @@ class GeneticAlgorithm(Metaheuristic):
         while i < epochs:
             i += 1
 
-            best = self.bestIndividual() * (1 + alpha)
+            best = self.bestObjective() * (1 + alpha)
 
             population_sample_size = self.population_size - int(self.population_size * stationary)
             population_sample_size -= population_sample_size % 2  # Asegurar que sea múltiplo de 2
@@ -46,11 +46,13 @@ class GeneticAlgorithm(Metaheuristic):
             population_sample = self.mutation(population_sample, self.problem)
             self.population = self.replace(self.population, population_sample, self.problem.objective) 
 
-            if(best > self.bestIndividual() and i == epochs):
+            if(best > self.bestObjective() and i == epochs):
                 i -= 1
 
+    def bestIndividual(self, population):
+        return max(population, key=lambda ind: self.problem.objective(ind))
 
-    def bestIndividual(self):
+    def bestObjective(self):
         objectives = [self.problem.objective(individual) for individual in self.population]
         return max(objectives)
 
